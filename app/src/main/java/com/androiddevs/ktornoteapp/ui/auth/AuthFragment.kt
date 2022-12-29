@@ -8,13 +8,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.data.remote.BasicAuthInterceptor
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_PASSWORD
+import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
+import com.androiddevs.ktornoteapp.other.Constants.NO_PASSWORD
 import com.androiddevs.ktornoteapp.other.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.google.android.material.textfield.TextInputEditText
@@ -39,6 +40,11 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (isLoggedIn()) {
+            authenticateApi(curEmail ?: "", curPassword ?: "")
+            redirectLogin()
+        }
 
         loginProgressBar = view.findViewById(R.id.loginProgressBar)
         registerProgressBar = view.findViewById(R.id.registerProgressBar)
@@ -70,6 +76,12 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
             val confirmedPassword = confirmPassword.text.toString()
             viewModel.register(email, password, confirmedPassword)
         }
+    }
+
+    private fun isLoggedIn(): Boolean {
+        curEmail = sharedPref.getString(KEY_LOGGED_IN_EMAIL, NO_EMAIL) ?: NO_EMAIL
+        curPassword = sharedPref.getString(KEY_LOGGED_IN_PASSWORD, NO_PASSWORD) ?: NO_PASSWORD
+        return curEmail != NO_EMAIL && curPassword != NO_PASSWORD
     }
 
     private fun authenticateApi(email: String, password: String) {
