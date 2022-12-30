@@ -19,7 +19,7 @@ class NoteRepository @Inject constructor(
     private val context: Application
 ) {
 
-    fun getALlNotes(): Flow<Resource<List<Note>>> {
+    fun getAllNotes(): Flow<Resource<List<Note>>> {
         return networkBoundResource(
             query = {
                 noteDao.getAllNotes()

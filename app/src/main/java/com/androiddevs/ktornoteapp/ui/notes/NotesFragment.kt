@@ -1,6 +1,7 @@
 package com.androiddevs.ktornoteapp.ui.notes
 
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,14 +9,20 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.androiddevs.ktornoteapp.R
+import com.androiddevs.ktornoteapp.adapters.NoteAdapter
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_PASSWORD
 import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.other.Constants.NO_PASSWORD
+import com.androiddevs.ktornoteapp.other.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +31,22 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NotesFragment : BaseFragment(R.layout.fragment_notes) {
 
+    private val viewModel: NotesViewModel by viewModels()
+
     @Inject
     lateinit var sharedPref: SharedPreferences
+
+    private lateinit var noteAdapter: NoteAdapter
+
+    private lateinit var rvNotes: RecyclerView
+
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    private fun setupRecyclerView() = rvNotes.apply {
+        noteAdapter = NoteAdapter()
+        adapter = noteAdapter
+        layoutManager = LinearLayoutManager(requireContext())
+    }
 
     private fun logout() {
         sharedPref.edit().putString(KEY_LOGGED_IN_EMAIL, NO_EMAIL).apply()
@@ -39,9 +60,51 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
         )
     }
 
+    private fun subscribeToObservers() {
+        viewModel.allNotes.observe(viewLifecycleOwner) {
+            it?.let { event ->
+                val result = event.peekContent()
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        noteAdapter.notes = result.data!!
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                    Status.ERROR -> {
+                        event.getContentIfNotHandled()?.let { errorResource ->
+                            errorResource.message?.let { message ->
+                                showSnackBar(message)
+                            }
+                        }
+                        result.data?.let { notes ->
+                            noteAdapter.notes = notes
+                        }
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                    Status.LOADING -> {
+                        result.data?.let { notes ->
+                            noteAdapter.notes = notes
+                        }
+                        swipeRefreshLayout.isRefreshing = true
+                    }
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().requestedOrientation = SCREEN_ORIENTATION_USER
+        val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        rvNotes = view.findViewById(R.id.rvNotes)
+        setupRecyclerView()
+        subscribeToObservers()
 
+        noteAdapter.setOnItemClickListener { note ->
+            findNavController().navigate(
+                NotesFragmentDirections.actionNotesFragmentToNoteDetailFragment(note.id)
+            )
+        }
         // The usage of an interface lets you inject your own implementation
         val menuHost: MenuHost = requireActivity()
 
@@ -62,7 +125,6 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-        val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
         fab.setOnClickListener {
             findNavController().navigate(
                 NotesFragmentDirections.actionNotesFragmentToAddEditNoteFragment(
