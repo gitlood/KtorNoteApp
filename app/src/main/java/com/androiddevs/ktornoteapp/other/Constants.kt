@@ -10,6 +10,8 @@ object Constants {
     const val NO_EMAIL = "No Email"
     const val NO_PASSWORD = "No Password"
 
+    const val DEFAULT_NOTE_COLOR = "FFA500"
+
     const val BASE_URL = "http://10.0.2.2:8080"
 
     const val ENCRYPTED_SHARED_PREF_NAME = "enc_shared_pref"

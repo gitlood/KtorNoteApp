@@ -42,6 +42,51 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().requestedOrientation = SCREEN_ORIENTATION_USER
+        val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        rvNotes = view.findViewById(R.id.rvNotes)
+        setupRecyclerView()
+        subscribeToObservers()
+
+        // The usage of an interface lets you inject your own implementation
+        val menuHost: MenuHost = requireActivity()
+
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.menu_notes, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.miLogout -> logout()
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        noteAdapter.setOnItemClickListener {
+            findNavController().navigate(
+                NotesFragmentDirections.actionNotesFragmentToNoteDetailFragment(it.id)
+            )
+        }
+
+        fab.setOnClickListener {
+            findNavController().navigate(
+                NotesFragmentDirections.actionNotesFragmentToAddEditNoteFragment(
+                    ""
+                )
+            )
+        }
+    }
+
     private fun setupRecyclerView() = rvNotes.apply {
         noteAdapter = NoteAdapter()
         adapter = noteAdapter
@@ -88,49 +133,6 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
                     }
                 }
             }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().requestedOrientation = SCREEN_ORIENTATION_USER
-        val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        rvNotes = view.findViewById(R.id.rvNotes)
-        setupRecyclerView()
-        subscribeToObservers()
-
-        noteAdapter.setOnItemClickListener { note ->
-            findNavController().navigate(
-                NotesFragmentDirections.actionNotesFragmentToNoteDetailFragment(note.id)
-            )
-        }
-        // The usage of an interface lets you inject your own implementation
-        val menuHost: MenuHost = requireActivity()
-
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.menu_notes, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.miLogout -> logout()
-                }
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-        fab.setOnClickListener {
-            findNavController().navigate(
-                NotesFragmentDirections.actionNotesFragmentToAddEditNoteFragment(
-                    ""
-                )
-            )
         }
     }
 }

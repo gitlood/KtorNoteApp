@@ -52,11 +52,11 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
         holder.itemView.apply {
-            val ivSynced = this.findViewById<ImageView>(R.id.ivSynced)
-            val tvSynced = this.findViewById<TextView>(R.id.tvSynced)
-            val tvDate = this.findViewById<TextView>(R.id.tvDate)
-            val viewNoteColor = this.findViewById<View>(R.id.viewNoteColor)
-            this.findViewById<MaterialTextView>(R.id.tvTitle).text = note.title
+            val ivSynced = findViewById<ImageView>(R.id.ivSynced)
+            val tvSynced = findViewById<TextView>(R.id.tvSynced)
+            val tvDate = findViewById<TextView>(R.id.tvDate)
+            val viewNoteColor = findViewById<View>(R.id.viewNoteColor)
+            findViewById<MaterialTextView>(R.id.tvTitle).text = note.title
             if (!note.isSynced) {
                 ivSynced.setImageResource(R.drawable.ic_cross)
                 tvSynced.text = "Not Synced"
@@ -73,9 +73,9 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
                 val wrappedDrawable = DrawableCompat.wrap(it)
                 val color = Color.parseColor("#${note.color}")
                 DrawableCompat.setTint(wrappedDrawable, color)
-                viewNoteColor.background = it
+                viewNoteColor.background = wrappedDrawable
             }
-            setOnItemClickListener {
+            setOnClickListener {
                 onItemClickListener?.let { click ->
                     click(note)
                 }
