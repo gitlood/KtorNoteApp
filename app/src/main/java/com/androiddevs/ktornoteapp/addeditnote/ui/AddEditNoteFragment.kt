@@ -16,7 +16,7 @@ import com.androiddevs.ktornoteapp.core.util.Constants.DEFAULT_NOTE_COLOR
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.androiddevs.ktornoteapp.ui.BaseFragment
+import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject

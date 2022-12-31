@@ -1,8 +1,7 @@
-package com.androiddevs.ktornoteapp.ui
+package com.androiddevs.ktornoteapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.androiddevs.ktornoteapp.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

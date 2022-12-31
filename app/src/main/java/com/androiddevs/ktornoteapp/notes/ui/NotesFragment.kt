@@ -29,7 +29,7 @@ import com.androiddevs.ktornoteapp.core.util.Event
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.notes.ui.adapters.NoteAdapter
-import com.androiddevs.ktornoteapp.ui.BaseFragment
+import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui
+package com.androiddevs.ktornoteapp.core.ui
 
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar

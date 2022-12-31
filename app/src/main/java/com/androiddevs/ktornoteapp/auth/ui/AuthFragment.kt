@@ -19,7 +19,7 @@ import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.androiddevs.ktornoteapp.ui.BaseFragment
+import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

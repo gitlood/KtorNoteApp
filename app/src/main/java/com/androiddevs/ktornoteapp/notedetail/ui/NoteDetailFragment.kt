@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.androiddevs.ktornoteapp.ui.BaseFragment
+import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
