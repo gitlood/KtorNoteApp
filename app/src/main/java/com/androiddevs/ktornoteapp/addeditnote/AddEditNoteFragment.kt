@@ -117,6 +117,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
         if (title.isEmpty() || content.isEmpty()) {
             return
         }
+
         val date = System.currentTimeMillis()
         val color = curNoteColor
         val id = curNote?.id ?: UUID.randomUUID().toString()

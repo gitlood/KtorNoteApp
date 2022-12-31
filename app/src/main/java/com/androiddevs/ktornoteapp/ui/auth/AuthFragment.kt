@@ -17,6 +17,7 @@ import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
+import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.google.android.material.textfield.TextInputEditText
@@ -43,10 +44,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (isLoggedIn()) {
-            authenticateApi(curEmail ?: "", curPassword ?: "")
-            redirectLogin()
-        }
+        checkIfUserIsLoggedIn()
 
         loginProgressBar = view.findViewById(R.id.loginProgressBar)
         registerProgressBar = view.findViewById(R.id.registerProgressBar)
@@ -80,18 +78,52 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
         }
     }
 
+    private fun checkIfUserIsLoggedIn() {
+        if (isLoggedIn()) {
+            authenticateApi(curEmail ?: "", curPassword ?: "")
+            navigateToNotes()
+        }
+    }
+
     private fun isLoggedIn(): Boolean {
         curEmail = sharedPref.getString(KEY_LOGGED_IN_EMAIL, NO_EMAIL) ?: NO_EMAIL
         curPassword = sharedPref.getString(KEY_LOGGED_IN_PASSWORD, NO_PASSWORD) ?: NO_PASSWORD
         return curEmail != NO_EMAIL && curPassword != NO_PASSWORD
     }
 
-    private fun authenticateApi(email: String, password: String) {
-        basicAuthInterceptor.email = email
-        basicAuthInterceptor.password = password
+    private fun onRegisterSuccess(result: Resource<String>) {
+        registerProgressBar.visibility = View.GONE
+        showSnackBar(result.data ?: "Successfully Registered an Account")
     }
 
-    private fun redirectLogin() {
+    private fun onRegisterLoading() {
+        registerProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun onRegisterError(result: Resource<String>) {
+        registerProgressBar.visibility = View.GONE
+        showSnackBar(result.message ?: "An Unknown Error Occurred")
+    }
+
+    private fun onLoginSuccess(result: Resource<String>) {
+        loginProgressBar.visibility = View.GONE
+        showSnackBar(result.data ?: "Successfully Logged In")
+        sharedPref.edit().putString(KEY_LOGGED_IN_EMAIL, curEmail).apply()
+        sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD, curPassword).apply()
+        authenticateApi(curEmail ?: "", curPassword ?: "")
+        navigateToNotes()
+    }
+
+    private fun onLoginLoading() {
+        loginProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun onLoginError(result: Resource<String>) {
+        loginProgressBar.visibility = View.GONE
+        showSnackBar(result.message ?: "Unknown Error Occurred")
+    }
+
+    private fun navigateToNotes() {
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.authFragment, true)
             .build()
@@ -101,24 +133,23 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
         )
     }
 
+    private fun authenticateApi(email: String, password: String) {
+        basicAuthInterceptor.email = email
+        basicAuthInterceptor.password = password
+    }
+
     private fun subscribeToObservers() {
         viewModel.loginStatus.observe(viewLifecycleOwner) { result ->
             result?.let {
                 when (result.status) {
                     Status.SUCCESS -> {
-                        loginProgressBar.visibility = View.GONE
-                        showSnackBar(result.data ?: "Successfully Logged In")
-                        sharedPref.edit().putString(KEY_LOGGED_IN_EMAIL, curEmail).apply()
-                        sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD, curPassword).apply()
-                        authenticateApi(curEmail ?: "", curPassword ?: "")
-                        redirectLogin()
+                        onLoginSuccess(result)
                     }
                     Status.ERROR -> {
-                        loginProgressBar.visibility = View.GONE
-                        showSnackBar(result.message ?: "Unknown Error Occurred")
+                        onLoginError(result)
                     }
                     Status.LOADING -> {
-                        loginProgressBar.visibility = View.VISIBLE
+                        onLoginLoading()
                     }
                 }
             }
@@ -127,15 +158,13 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
             result?.let {
                 when (result.status) {
                     Status.SUCCESS -> {
-                        registerProgressBar.visibility = View.GONE
-                        showSnackBar(result.data ?: "Successfully Registered an Account")
+                        onRegisterSuccess(result)
                     }
                     Status.ERROR -> {
-                        registerProgressBar.visibility = View.GONE
-                        showSnackBar(result.message ?: "An Unknown Error Occurred")
+                        onRegisterError(result)
                     }
                     Status.LOADING -> {
-                        registerProgressBar.visibility = View.VISIBLE
+                        onRegisterLoading()
                     }
                 }
             }
