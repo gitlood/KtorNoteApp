@@ -56,17 +56,16 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
             val tvSynced = findViewById<TextView>(R.id.tvSynced)
             val tvDate = findViewById<TextView>(R.id.tvDate)
             val viewNoteColor = findViewById<View>(R.id.viewNoteColor)
-            findViewById<MaterialTextView>(R.id.tvTitle).text = note.title
+            val tvTitle = findViewById<MaterialTextView>(R.id.tvTitle)
+           tvTitle.text = note.title
             if (!note.isSynced) {
                 ivSynced.setImageResource(R.drawable.ic_cross)
-                tvSynced.text = "Not Synced"
+                tvSynced.text = context.getString(R.string.not_synced)
             } else {
                 ivSynced.setImageResource(R.drawable.ic_check)
-                tvSynced.text = "Synced"
+                tvSynced.text = context.getString(R.string.synced)
             }
-            val dateFormat = SimpleDateFormat("dd.MM.yy, HH:mm", Locale.getDefault())
-            val dateString = dateFormat.format(note.date)
-            tvDate.text = dateString
+            tvDate.text = formatDate(note)
 
             val drawable = ResourcesCompat.getDrawable(resources, R.drawable.circle_shape, null)
             drawable?.let {
@@ -81,6 +80,11 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
                 }
             }
         }
+    }
+
+    private fun formatDate(note: Note): String? {
+        val dateFormat = SimpleDateFormat("dd.MM.yy, HH:mm", Locale.getDefault())
+       return dateFormat.format(note.date)
     }
 
     override fun getItemCount(): Int {

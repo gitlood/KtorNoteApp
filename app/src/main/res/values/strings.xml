@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">KtorNoteApp</string>
+    <string name="synced">Synced</string>
+    <string name="not_synced">Not Synced</string>
 </resources>
