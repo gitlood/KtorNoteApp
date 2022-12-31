@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.auth
+package com.androiddevs.ktornoteapp.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -33,7 +33,7 @@ class AuthViewModel @Inject constructor(private val repository: NoteRepository) 
 
     fun register(email: String, password: String, repeatedPassword: String) {
         _registerStatus.postValue(Resource.loading(null))
-        if (email.isEmpty() || password.isEmpty() || repeatedPassword.isEmpty()) {
+        if (allFieldsPopulated(email, password, repeatedPassword)) {
             _registerStatus.postValue(Resource.error("Please fill out all the fields", null))
             return
         }
@@ -41,10 +41,19 @@ class AuthViewModel @Inject constructor(private val repository: NoteRepository) 
             _registerStatus.postValue(Resource.error("The passwords do not match", null))
             return
         }
-        //further checks on password formatting done here - numbers, capital letters, special chars...
+        register(email, password)
+    }
+
+    private fun register(email: String, password: String) {
         viewModelScope.launch {
             val result = repository.register(email, password)
             _registerStatus.postValue(result)
         }
     }
+
+    private fun allFieldsPopulated(
+        email: String,
+        password: String,
+        repeatedPassword: String
+    ) = email.isEmpty() || password.isEmpty() || repeatedPassword.isEmpty()
 }

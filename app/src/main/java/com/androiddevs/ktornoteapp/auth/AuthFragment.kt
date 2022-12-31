@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.auth
+package com.androiddevs.ktornoteapp.auth
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
