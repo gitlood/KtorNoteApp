@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.dialogues
+package com.androiddevs.ktornoteapp.notedetail.ui
 
 import android.app.Dialog
 import android.os.Bundle

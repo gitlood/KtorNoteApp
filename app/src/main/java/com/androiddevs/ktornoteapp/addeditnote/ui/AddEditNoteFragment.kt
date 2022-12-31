@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.addeditnote
+package com.androiddevs.ktornoteapp.addeditnote.ui
 
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -10,13 +10,13 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
+import com.androiddevs.ktornoteapp.addeditnote.AddEditNoteFragmentArgs
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Constants.DEFAULT_NOTE_COLOR
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
-import com.androiddevs.ktornoteapp.ui.dialogues.ColorPickerDialogueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -53,7 +53,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
             subscribeToObservers()
         }
 
-       savedInstanceState?.let {
+        savedInstanceState?.let {
             val colorPickerDialog = parentFragmentManager.findFragmentByTag(FRAGMENT_TAG)
                     as ColorPickerDialogueFragment?
             colorPickerDialog?.setPositiveListener {
@@ -73,6 +73,25 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
     override fun onPause() {
         super.onPause()
         saveNote()
+    }
+
+    private fun saveNote() {
+        val authEmail = sharedPref.getString(KEY_LOGGED_IN_EMAIL, NO_EMAIL) ?: NO_EMAIL
+
+        val title = etNoteTitle.text.toString()
+        val content = etNoteContent.text.toString()
+
+        if (title.isEmpty() || content.isEmpty()) {
+            return
+        }
+
+        val date = System.currentTimeMillis()
+        val color = curNoteColor
+        val id = curNote?.id ?: UUID.randomUUID().toString()
+        val owners = curNote?.owners ?: listOf(authEmail)
+
+        val note = Note(title, content, date, owners, color, id = id)
+        viewModel.insertNote(note)
     }
 
     private fun changeViewNoteColor(colorString: String) {
@@ -106,24 +125,5 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
                 }
             }
         }
-    }
-
-    private fun saveNote() {
-        val authEmail = sharedPref.getString(KEY_LOGGED_IN_EMAIL, NO_EMAIL) ?: NO_EMAIL
-
-        val title = etNoteTitle.text.toString()
-        val content = etNoteContent.text.toString()
-
-        if (title.isEmpty() || content.isEmpty()) {
-            return
-        }
-
-        val date = System.currentTimeMillis()
-        val color = curNoteColor
-        val id = curNote?.id ?: UUID.randomUUID().toString()
-        val owners = curNote?.owners ?: listOf(authEmail)
-
-        val note = Note(title, content, date, owners, color, id = id)
-        viewModel.insertNote(note)
     }
 }

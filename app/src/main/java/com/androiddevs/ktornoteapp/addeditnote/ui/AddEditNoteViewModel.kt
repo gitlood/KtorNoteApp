@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.addeditnote
+package com.androiddevs.ktornoteapp.addeditnote.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,6 +32,5 @@ class AddEditNoteViewModel @Inject constructor(private val repository: NoteRepos
         note?.let {
             _note.postValue(Event(Resource.success(it)))
         } ?: _note.postValue(Event(Resource.error("Note not found", null)))
-
     }
 }

@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.auth
+package com.androiddevs.ktornoteapp.auth.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

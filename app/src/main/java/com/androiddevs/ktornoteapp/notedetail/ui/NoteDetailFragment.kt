@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.notedetail
+package com.androiddevs.ktornoteapp.notedetail.ui
 
 import android.os.Bundle
 import android.view.*
@@ -14,7 +14,6 @@ import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
-import com.androiddevs.ktornoteapp.ui.dialogues.AddOwnerDialogueFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint

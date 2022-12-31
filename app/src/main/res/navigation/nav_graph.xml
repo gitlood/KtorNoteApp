@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/authFragment"
-        android:name="com.androiddevs.ktornoteapp.auth.AuthFragment"
+        android:name="com.androiddevs.ktornoteapp.auth.ui.AuthFragment"
         android:label="AuthFragment" >
         <action
             android:id="@+id/action_authFragment_to_notesFragment"
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/noteDetailFragment"
-        android:name="com.androiddevs.ktornoteapp.ui.notedetail.NoteDetailFragment"
+        android:name="com.androiddevs.ktornoteapp.notedetail.ui.NoteDetailFragment"
         android:label="NoteDetailFragment" >
         <action
             android:id="@+id/action_noteDetailFragment_to_addEditNoteFragment"

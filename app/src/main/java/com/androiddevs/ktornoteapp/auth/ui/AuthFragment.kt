@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.auth
+package com.androiddevs.ktornoteapp.auth.ui
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -139,33 +139,41 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     }
 
     private fun subscribeToObservers() {
-        viewModel.loginStatus.observe(viewLifecycleOwner) { result ->
-            result?.let {
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        onLoginSuccess(result)
-                    }
-                    Status.ERROR -> {
-                        onLoginError(result)
-                    }
-                    Status.LOADING -> {
-                        onLoginLoading()
-                    }
+        viewModel.loginStatus.observe(viewLifecycleOwner) { loginStatus ->
+            onLoginStatus(loginStatus)
+        }
+        viewModel.registerStatus.observe(viewLifecycleOwner) { registerStatus ->
+            onRegisterStatus(registerStatus)
+        }
+    }
+
+    private fun onLoginStatus(loginStatus: Resource<String>) {
+        loginStatus.let {
+            when (loginStatus.status) {
+                Status.SUCCESS -> {
+                    onLoginSuccess(loginStatus)
+                }
+                Status.ERROR -> {
+                    onLoginError(loginStatus)
+                }
+                Status.LOADING -> {
+                    onLoginLoading()
                 }
             }
         }
-        viewModel.registerStatus.observe(viewLifecycleOwner) { result ->
-            result?.let {
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        onRegisterSuccess(result)
-                    }
-                    Status.ERROR -> {
-                        onRegisterError(result)
-                    }
-                    Status.LOADING -> {
-                        onRegisterLoading()
-                    }
+    }
+
+    private fun onRegisterStatus(registerStatus: Resource<String>) {
+        registerStatus.let {
+            when (registerStatus.status) {
+                Status.SUCCESS -> {
+                    onRegisterSuccess(registerStatus)
+                }
+                Status.ERROR -> {
+                    onRegisterError(registerStatus)
+                }
+                Status.LOADING -> {
+                    onRegisterLoading()
                 }
             }
         }
