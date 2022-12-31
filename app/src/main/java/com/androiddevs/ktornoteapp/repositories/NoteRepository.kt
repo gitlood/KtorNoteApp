@@ -129,7 +129,7 @@ class NoteRepository @Inject constructor(
 
     suspend fun addOwnerToNote(owner: String, noteID: String) = withContext(Dispatchers.IO) {
         try {
-            val response = noteApi.addOwnerToNote(AddOwnerRequest(noteID, owner))
+            val response = noteApi.addOwnerToNote(AddOwnerRequest(owner, noteID))
             if (response.isSuccessful && response.body()!!.successful) {
                 Resource.success(response.body()?.message)
             } else {

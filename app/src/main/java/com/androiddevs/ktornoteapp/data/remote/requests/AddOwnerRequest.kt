@@ -1,6 +1,6 @@
 package com.androiddevs.ktornoteapp.data.remote.requests
 
 data class AddOwnerRequest(
-    val noteID: String,
-    val owner: String
+    val owner: String,
+    val noteID: String
 )

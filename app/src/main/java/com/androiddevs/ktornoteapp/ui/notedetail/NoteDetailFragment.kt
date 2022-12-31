@@ -3,6 +3,7 @@ package com.androiddevs.ktornoteapp.ui.notedetail
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
@@ -32,6 +33,8 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
     private lateinit var tvNoteContent: MaterialTextView
 
     private lateinit var addOwnerProgressBar: ProgressBar
+
+    private lateinit var clNoteContainer: ConstraintLayout
 
     private var curNote: Note? = null
 
@@ -64,7 +67,7 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
     }
 
     private fun showAddOwnerDialog() {
-        AddOwnerDialogueFragment().apply {
+        AddOwnerDialogueFragment(clNoteContainer = clNoteContainer).apply {
             setPositiveListener {
                 addOwnerToCurNote(it)
             }
@@ -85,11 +88,21 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
 
         addOwnerProgressBar = view.findViewById(R.id.addOwnerProgressBar)
 
+        clNoteContainer = view.findViewById(R.id.clNoteContainer)
+
         subscribeToObservers()
         view.findViewById<FloatingActionButton>(R.id.fabEditNote).setOnClickListener {
             findNavController().navigate(
                 NoteDetailFragmentDirections.actionNoteDetailFragmentToAddEditNoteFragment(args.id)
             )
+        }
+
+        if (savedInstanceState != null) {
+            val addOwnerDialog = parentFragmentManager.findFragmentByTag(ADD_OWNER_DIALOG_TAG)
+                    as AddOwnerDialogueFragment?
+            addOwnerDialog?.setPositiveListener {
+                addOwnerToCurNote(it)
+            }
         }
     }
 

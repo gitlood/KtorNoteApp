@@ -9,7 +9,7 @@ import com.androiddevs.ktornoteapp.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 
-class AddOwnerDialogueFragment : DialogFragment() {
+class AddOwnerDialogueFragment(private val clNoteContainer: ConstraintLayout) : DialogFragment() {
 
     private var positiveListener: ((String) -> Unit)? = null
 
@@ -18,9 +18,6 @@ class AddOwnerDialogueFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = layoutInflater.inflate(R.layout.fragment_note_detail, null)
-        val clNoteContainer = view.findViewById<ConstraintLayout>(R.id.clNoteContainer)
-
         val addOwnerEditText = layoutInflater.inflate(
             R.layout.edit_text_email,
             clNoteContainer,
@@ -28,22 +25,18 @@ class AddOwnerDialogueFragment : DialogFragment() {
         ) as TextInputLayout
         return MaterialAlertDialogBuilder(requireContext())
             .setIcon(R.drawable.ic_add_person)
-            .setTitle("Add Owner To Note")
-            .setMessage(
-                "Enter an Email of a Person you want to share the note with." +
-                        "This person will be able to read and edit the note."
-            )
+            .setTitle("Add Owner to Note")
+            .setMessage("Enter an E-Mail of a person you want to share the note with." +
+                    "This person will be able to read and edit the note.")
             .setView(addOwnerEditText)
             .setPositiveButton("Add") { _, _ ->
-                val email =
-                    addOwnerEditText.findViewById<EditText>(R.id.etAddOwnerEmail).text.toString()
+                val email = addOwnerEditText.findViewById<EditText>(R.id.etAddOwnerEmail).text.toString()
                 positiveListener?.let { yes ->
                     yes(email)
                 }
             }
             .setNegativeButton("Cancel") { dialogInterface, _ ->
                 dialogInterface.cancel()
-
             }
             .create()
     }

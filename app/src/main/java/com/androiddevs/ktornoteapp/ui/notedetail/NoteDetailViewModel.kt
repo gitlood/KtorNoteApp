@@ -20,15 +20,16 @@ class NoteDetailViewModel @Inject constructor(private val repository: NoteReposi
 
     fun addOwnerToNote(owner: String, noteID: String) {
         _addOwnerStatus.postValue(Event(Resource.loading(null)))
-        if (owner.isEmpty() || noteID.isEmpty()) {
+        if(owner.isEmpty() || noteID.isEmpty()) {
             _addOwnerStatus.postValue(Event(Resource.error("The owner can't be empty", null)))
-        return
+            return
         }
         viewModelScope.launch {
             val result = repository.addOwnerToNote(owner, noteID)
             _addOwnerStatus.postValue(Event(result))
         }
     }
+
 
     fun observeNoteByID(noteID: String) = repository.observeNoteByID(noteID)
 }
