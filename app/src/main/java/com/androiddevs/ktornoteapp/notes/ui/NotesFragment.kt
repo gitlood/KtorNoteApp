@@ -20,11 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.androiddevs.ktornoteapp.R
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.notes.ui.adapters.NoteAdapter
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
+import com.androiddevs.ktornoteapp.core.util.Event
+import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -165,25 +168,13 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
                 val result = event.peekContent()
                 when (result.status) {
                     Status.SUCCESS -> {
-                        noteAdapter.notes = result.data!!
-                        swipeRefreshLayout.isRefreshing = false
+                        onSuccess(result)
                     }
                     Status.ERROR -> {
-                        event.getContentIfNotHandled()?.let { errorResource ->
-                            errorResource.message?.let { message ->
-                                showSnackBar(message)
-                            }
-                        }
-                        result.data?.let { notes ->
-                            noteAdapter.notes = notes
-                        }
-                        swipeRefreshLayout.isRefreshing = false
+                        onError(event, result)
                     }
                     Status.LOADING -> {
-                        result.data?.let { notes ->
-                            noteAdapter.notes = notes
-                        }
-                        swipeRefreshLayout.isRefreshing = true
+                        onLoading(result)
                     }
                 }
             }
@@ -191,5 +182,32 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
         swipingItem.observe(viewLifecycleOwner) {
             swipeRefreshLayout.isEnabled = !it
         }
+    }
+
+    private fun onLoading(result: Resource<List<Note>>) {
+        result.data?.let { notes ->
+            noteAdapter.notes = notes
+        }
+        swipeRefreshLayout.isRefreshing = true
+    }
+
+    private fun onError(
+        event: Event<Resource<List<Note>>>,
+        result: Resource<List<Note>>
+    ) {
+        event.getContentIfNotHandled()?.let { errorResource ->
+            errorResource.message?.let { message ->
+                showSnackBar(message)
+            }
+        }
+        result.data?.let { notes ->
+            noteAdapter.notes = notes
+        }
+        swipeRefreshLayout.isRefreshing = false
+    }
+
+    private fun onSuccess(result: Resource<List<Note>>) {
+        noteAdapter.notes = result.data!!
+        swipeRefreshLayout.isRefreshing = false
     }
 }

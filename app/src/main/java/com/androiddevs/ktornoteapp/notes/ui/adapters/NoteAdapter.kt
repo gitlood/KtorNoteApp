@@ -19,7 +19,11 @@ import java.util.*
 
 class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
-    inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    var notes: List<Note>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
+
+    private var onItemClickListener: ((Note) -> Unit)? = null
 
     private val diffCallBack = object : DiffUtil.ItemCallback<Note>() {
         override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
@@ -31,13 +35,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         }
     }
 
-    private var onItemClickListener: ((Note) -> Unit)? = null
-
     private val differ = AsyncListDiffer(this, diffCallBack)
-
-    var notes: List<Note>
-        get() = differ.currentList
-        set(value) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(
@@ -57,7 +55,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
             val tvDate = findViewById<TextView>(R.id.tvDate)
             val viewNoteColor = findViewById<View>(R.id.viewNoteColor)
             val tvTitle = findViewById<MaterialTextView>(R.id.tvTitle)
-           tvTitle.text = note.title
+            tvTitle.text = note.title
             if (!note.isSynced) {
                 ivSynced.setImageResource(R.drawable.ic_cross)
                 tvSynced.text = context.getString(R.string.not_synced)
@@ -82,11 +80,6 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         }
     }
 
-    private fun formatDate(note: Note): String? {
-        val dateFormat = SimpleDateFormat("dd.MM.yy, HH:mm", Locale.getDefault())
-       return dateFormat.format(note.date)
-    }
-
     override fun getItemCount(): Int {
         return notes.size
     }
@@ -94,4 +87,11 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     fun setOnItemClickListener(onItemClick: (Note) -> Unit) {
         this.onItemClickListener = onItemClick
     }
+
+    private fun formatDate(note: Note): String? {
+        val dateFormat = SimpleDateFormat("dd.MM.yy, HH:mm", Locale.getDefault())
+        return dateFormat.format(note.date)
+    }
+
+    inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
