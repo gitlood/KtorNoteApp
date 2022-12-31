@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/addEditNoteFragment"
-        android:name="com.androiddevs.ktornoteapp.ui.addeditnote.AddEditNoteFragment"
+        android:name="com.androiddevs.ktornoteapp.addeditnote.AddEditNoteFragment"
         android:label="AddEditNoteFragment" >
         <argument
             android:name="id"

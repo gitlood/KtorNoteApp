@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.addeditnote
+package com.androiddevs.ktornoteapp.addeditnote
 
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -26,9 +26,8 @@ const val FRAGMENT_TAG = "AddEditNoteFragment"
 @AndroidEntryPoint
 class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
 
-    private val viewModel: AddEditNoteViewModel by viewModels()
-
-    private val args: AddEditNoteFragmentArgs by navArgs()
+    @Inject
+    lateinit var sharedPref: SharedPreferences
 
     private var curNote: Note? = null
     private var curNoteColor = DEFAULT_NOTE_COLOR
@@ -38,24 +37,23 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
 
     private lateinit var viewNoteColor: View
 
-    @Inject
-    lateinit var sharedPref: SharedPreferences
+    private val viewModel: AddEditNoteViewModel by viewModels()
+
+    private val args: AddEditNoteFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         etNoteTitle = view.findViewById(R.id.etNoteTitle)
         etNoteContent = view.findViewById(R.id.etNoteContent)
-
         viewNoteColor = view.findViewById<View>(R.id.viewNoteColor)
-
 
         if (args.id.isNotEmpty()) {
             viewModel.getNoteById(args.id)
             subscribeToObservers()
         }
 
-        if (savedInstanceState != null) {
+       savedInstanceState?.let {
             val colorPickerDialog = parentFragmentManager.findFragmentByTag(FRAGMENT_TAG)
                     as ColorPickerDialogueFragment?
             colorPickerDialog?.setPositiveListener {

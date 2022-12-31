@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.addeditnote
+package com.androiddevs.ktornoteapp.addeditnote
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
