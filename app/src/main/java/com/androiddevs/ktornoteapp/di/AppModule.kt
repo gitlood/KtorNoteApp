@@ -1,13 +1,18 @@
 package com.androiddevs.ktornoteapp.di
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.androiddevs.ktornoteapp.NoteApplication
+import com.androiddevs.ktornoteapp.core.data.local.NoteDao
 import com.androiddevs.ktornoteapp.core.data.local.NotesDatabase
 import com.androiddevs.ktornoteapp.core.data.remote.BasicAuthInterceptor
 import com.androiddevs.ktornoteapp.core.data.remote.NoteApi
+import com.androiddevs.ktornoteapp.core.data.repositories.NoteRepositoryImpl
+import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import com.androiddevs.ktornoteapp.core.util.Constants.BASE_URL
 import com.androiddevs.ktornoteapp.core.util.Constants.DATABASE_NAME
 import com.androiddevs.ktornoteapp.core.util.Constants.ENCRYPTED_SHARED_PREF_NAME
@@ -24,6 +29,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideApplication(@ApplicationContext app: Context): NoteApplication {
+        return app as NoteApplication
+    }
+
+    @Singleton
+    @Provides
+    fun provideNoteRepository(
+        noteDao: NoteDao,
+        noteApi: NoteApi,
+        application: Application
+    ): NoteRepository = NoteRepositoryImpl(
+        noteDao, noteApi, application
+    )
 
     @Singleton
     @Provides

@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.repositories
+package com.androiddevs.ktornoteapp.core.data.repositories
 
 import android.app.Application
 import com.androiddevs.ktornoteapp.core.data.local.NoteDao
@@ -11,7 +11,7 @@ import com.androiddevs.ktornoteapp.core.data.remote.requests.DeleteNoteRequest
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.checkForInternetConnection
 import com.androiddevs.ktornoteapp.core.util.networkBoundResource
-import com.androiddevs.ktornoteapp.repositories.interfaces.NoteRepository
+import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

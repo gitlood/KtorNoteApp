@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.repositories.interfaces
+package com.androiddevs.ktornoteapp.core.data.repositories.interfaces
 
 import androidx.lifecycle.LiveData
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androiddevs.ktornoteapp.core.util.Event
 import com.androiddevs.ktornoteapp.core.util.Resource
-import com.androiddevs.ktornoteapp.repositories.NoteRepositoryImpl
+import com.androiddevs.ktornoteapp.core.data.repositories.NoteRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
