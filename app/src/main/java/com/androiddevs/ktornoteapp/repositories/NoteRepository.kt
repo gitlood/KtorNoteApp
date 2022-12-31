@@ -24,68 +24,7 @@ class NoteRepository @Inject constructor(
     private val context: Application
 ) {
 
-    suspend fun insertNote(note: Note) {
-        val response = addNote(note)
-        if (response != null && response.isSuccessful) {
-            noteDao.insertNote(note.apply { isSynced = true })
-        } else {
-            noteDao.insertNote(note)
-        }
-    }
-
-    private suspend fun addNote(note: Note): Response<ResponseBody>? {
-        val response = try {
-            noteApi.addNote(note)
-        } catch (e: Exception) {
-            null
-        }
-        return response
-    }
-
-    suspend fun insertNotes(notes: List<Note>) {
-        notes.forEach {
-            insertNote(it)
-        }
-    }
-
-    suspend fun deleteNote(noteID: String) {
-        val response = try {
-            noteApi.deleteNote(DeleteNoteRequest(noteID))
-        } catch (e: Exception) {
-            null
-        }
-        noteDao.deleteNoteById(noteID)
-        if (response == null || !response.isSuccessful) {
-            noteDao.insertLocallyDeletedNoteID(LocallyDeletedNoteId(noteID))
-        } else {
-            deleteLocallyDeletedNoteID(noteID)
-        }
-    }
-
-    fun observeNoteByID(noteID: String) = noteDao.observeNoteById(noteID)
-
-    suspend fun deleteLocallyDeletedNoteID(deletedNoteId: String) {
-        noteDao.deleteNoteById(deletedNoteId)
-    }
-
     private var curNotesResponse: Response<List<Note>>? = null
-
-    suspend fun syncNotes() {
-        val locallyDeletedNoteIds = noteDao.getAllLocallyDeletedNoteIDS()
-        locallyDeletedNoteIds.forEach { id -> deleteNote(id.deletedNoteID) }
-
-        val unsyncedNotes = noteDao.getAllUnsyncedNotes()
-        unsyncedNotes.forEach { note -> insertNote(note) }
-
-        curNotesResponse = noteApi.getNotes()
-        curNotesResponse?.body()?.let { notes ->
-            noteDao.deleteAllNotes()
-            insertNotes(notes.onEach { note -> note.isSynced = true }
-            )
-        }
-    }
-
-    suspend fun getNoteById(noteId: String) = noteDao.getNoteById(noteId)
 
     fun getAllNotes(): Flow<Resource<List<Note>>> {
         return networkBoundResource(
@@ -105,6 +44,50 @@ class NoteRepository @Inject constructor(
                 checkForInternetConnection(context)
             }
         )
+    }
+
+    fun observeNoteByID(noteID: String) = noteDao.observeNoteById(noteID)
+
+    suspend fun insertNote(note: Note) {
+        val response = addNote(note)
+        if (response != null && response.isSuccessful) {
+            noteDao.insertNote(note.apply { isSynced = true })
+        } else {
+            noteDao.insertNote(note)
+        }
+    }
+
+    suspend fun deleteNote(noteID: String) {
+        val response = try {
+            noteApi.deleteNote(DeleteNoteRequest(noteID))
+        } catch (e: Exception) {
+            null
+        }
+        noteDao.deleteNoteById(noteID)
+        if (response == null || !response.isSuccessful) {
+            noteDao.insertLocallyDeletedNoteID(LocallyDeletedNoteId(noteID))
+        } else {
+            deleteLocallyDeletedNoteID(noteID)
+        }
+    }
+
+    suspend fun deleteLocallyDeletedNoteID(deletedNoteId: String) {
+        noteDao.deleteNoteById(deletedNoteId)
+    }
+
+    suspend fun getNoteById(noteId: String) = noteDao.getNoteById(noteId)
+
+    suspend fun addOwnerToNote(owner: String, noteID: String) = withContext(Dispatchers.IO) {
+        try {
+            val response = noteApi.addOwnerToNote(AddOwnerRequest(owner, noteID))
+            if (response.isSuccessful && response.body()!!.successful) {
+                Resource.success(response.body()?.message)
+            } else {
+                Resource.error(response.body()?.message ?: response.message(), null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Couldn't connect to the servers. Check your internet connection", null)
+        }
     }
 
     suspend fun register(email: String, password: String) = withContext(Dispatchers.IO) {
@@ -133,16 +116,33 @@ class NoteRepository @Inject constructor(
         }
     }
 
-    suspend fun addOwnerToNote(owner: String, noteID: String) = withContext(Dispatchers.IO) {
-        try {
-            val response = noteApi.addOwnerToNote(AddOwnerRequest(owner, noteID))
-            if (response.isSuccessful && response.body()!!.successful) {
-                Resource.success(response.body()?.message)
-            } else {
-                Resource.error(response.body()?.message ?: response.message(), null)
-            }
+    private suspend fun syncNotes() {
+        val locallyDeletedNoteIds = noteDao.getAllLocallyDeletedNoteIDS()
+        locallyDeletedNoteIds.forEach { id -> deleteNote(id.deletedNoteID) }
+
+        val unsyncedNotes = noteDao.getAllUnsyncedNotes()
+        unsyncedNotes.forEach { note -> insertNote(note) }
+
+        curNotesResponse = noteApi.getNotes()
+        curNotesResponse?.body()?.let { notes ->
+            noteDao.deleteAllNotes()
+            insertNotes(notes.onEach { note -> note.isSynced = true }
+            )
+        }
+    }
+
+    private suspend fun addNote(note: Note): Response<ResponseBody>? {
+        val response = try {
+            noteApi.addNote(note)
         } catch (e: Exception) {
-            Resource.error("Couldn't connect to the servers. Check your internet connection", null)
+            null
+        }
+        return response
+    }
+
+    private suspend fun insertNotes(notes: List<Note>) {
+        notes.forEach {
+            insertNote(it)
         }
     }
 }

@@ -13,6 +13,7 @@ import javax.inject.Inject
 class NotesViewModel @Inject constructor(
     private val repository: NoteRepository
 ) : ViewModel() {
+
     private val _forceUpdate = MutableLiveData(false)
 
     private val _allNotes = _forceUpdate.switchMap {
@@ -25,12 +26,12 @@ class NotesViewModel @Inject constructor(
 
     fun syncAllNotes() = _forceUpdate.postValue(true)
 
-    fun deleteNote(noteID: String) = viewModelScope.launch {
-        repository.deleteNote(noteID)
-    }
-
     fun insertNote(note: Note) = viewModelScope.launch {
         repository.insertNote(note)
+    }
+
+    fun deleteNote(noteID: String) = viewModelScope.launch {
+        repository.deleteNote(noteID)
     }
 
     fun deleteLocallyDeletedNoteId(deletedNoteId: String) = viewModelScope.launch {
