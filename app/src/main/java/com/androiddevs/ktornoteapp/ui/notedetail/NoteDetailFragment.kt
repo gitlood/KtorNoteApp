@@ -1,17 +1,25 @@
 package com.androiddevs.ktornoteapp.ui.notedetail
 
 import android.os.Bundle
-import android.view.View
+import android.view.*
+import android.widget.ProgressBar
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.other.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
+import com.androiddevs.ktornoteapp.ui.dialogues.AddOwnerDialogueFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
+
+const val ADD_OWNER_DIALOG_TAG = "ADD_OWNER_DIALOG_TAG"
 
 @AndroidEntryPoint
 class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
@@ -23,13 +31,60 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
     private lateinit var tvNoteTitle: MaterialTextView
     private lateinit var tvNoteContent: MaterialTextView
 
+    private lateinit var addOwnerProgressBar: ProgressBar
+
     private var curNote: Note? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // The usage of an interface lets you inject your own implementation
+        val menuHost: MenuHost = requireActivity()
+
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.note_detail_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.miAddOwner -> showAddOwnerDialog()
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun showAddOwnerDialog() {
+        AddOwnerDialogueFragment().apply {
+            setPositiveListener {
+                addOwnerToCurNote(it)
+            }
+        }.show(parentFragmentManager, ADD_OWNER_DIALOG_TAG)
+    }
+
+    private fun addOwnerToCurNote(email: String) {
+        curNote?.let { note ->
+            viewModel.addOwnerToNote(email, note.id)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         tvNoteTitle = view.findViewById(R.id.tvNoteTitle)
         tvNoteContent = view.findViewById(R.id.tvNoteContent)
+
+        addOwnerProgressBar = view.findViewById(R.id.addOwnerProgressBar)
+
         subscribeToObservers()
         view.findViewById<FloatingActionButton>(R.id.fabEditNote).setOnClickListener {
             findNavController().navigate(
@@ -45,6 +100,23 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
     }
 
     private fun subscribeToObservers() {
+        viewModel.addOwnerStatus.observe(viewLifecycleOwner) { event ->
+            event?.getContentIfNotHandled()?.let { result ->
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        addOwnerProgressBar.visibility = View.GONE
+                        showSnackBar(result.data ?: "Successfully added owner to note")
+                    }
+                    Status.ERROR -> {
+                        addOwnerProgressBar.visibility = View.GONE
+                        showSnackBar(result.message ?: "An unknown error occured")
+                    }
+                    Status.LOADING -> {
+                        addOwnerProgressBar.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
         viewModel.observeNoteByID(args.id).observe(viewLifecycleOwner) { note ->
             note?.let {
                 tvNoteTitle.text = note.title

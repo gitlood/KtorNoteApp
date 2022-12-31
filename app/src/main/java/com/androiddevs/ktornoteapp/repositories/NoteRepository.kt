@@ -6,6 +6,7 @@ import com.androiddevs.ktornoteapp.data.local.entities.LocallyDeletedNoteId
 import com.androiddevs.ktornoteapp.data.local.entities.Note
 import com.androiddevs.ktornoteapp.data.remote.NoteApi
 import com.androiddevs.ktornoteapp.data.remote.requests.AccountRequest
+import com.androiddevs.ktornoteapp.data.remote.requests.AddOwnerRequest
 import com.androiddevs.ktornoteapp.data.remote.requests.DeleteNoteRequest
 import com.androiddevs.ktornoteapp.other.Resource
 import com.androiddevs.ktornoteapp.other.checkForInternetConnection
@@ -116,6 +117,19 @@ class NoteRepository @Inject constructor(
     suspend fun login(email: String, password: String) = withContext(Dispatchers.IO) {
         try {
             val response = noteApi.login(AccountRequest(email, password))
+            if (response.isSuccessful && response.body()!!.successful) {
+                Resource.success(response.body()?.message)
+            } else {
+                Resource.error(response.body()?.message ?: response.message(), null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Couldn't connect to the servers. Check your internet connection", null)
+        }
+    }
+
+    suspend fun addOwnerToNote(owner: String, noteID: String) = withContext(Dispatchers.IO) {
+        try {
+            val response = noteApi.addOwnerToNote(AddOwnerRequest(noteID, owner))
             if (response.isSuccessful && response.body()!!.successful) {
                 Resource.success(response.body()?.message)
             } else {
