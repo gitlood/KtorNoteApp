@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.ui.notes
+package com.androiddevs.ktornoteapp.notes.ui
 
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.androiddevs.ktornoteapp.R
-import com.androiddevs.ktornoteapp.adapters.NoteAdapter
+import com.androiddevs.ktornoteapp.notes.ui.adapters.NoteAdapter
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_PASSWORD
 import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL

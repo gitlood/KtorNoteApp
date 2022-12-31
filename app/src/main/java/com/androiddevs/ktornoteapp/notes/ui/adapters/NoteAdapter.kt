@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.adapters
+package com.androiddevs.ktornoteapp.notes.ui.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.androiddevs.ktornoteapp.R
-import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.google.android.material.textview.MaterialTextView
 import java.text.SimpleDateFormat
 import java.util.*

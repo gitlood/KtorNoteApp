@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.data.remote.responses
+package com.androiddevs.ktornoteapp.core.data.remote.responses
 
 data class SimpleResponse(
     val successful: Boolean,

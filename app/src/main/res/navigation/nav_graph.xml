@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/notesFragment"
-        android:name="com.androiddevs.ktornoteapp.ui.notes.NotesFragment"
+        android:name="com.androiddevs.ktornoteapp.notes.ui.NotesFragment"
         android:label="NotesFragment" >
         <action
             android:id="@+id/action_notesFragment_to_addEditNoteFragment"

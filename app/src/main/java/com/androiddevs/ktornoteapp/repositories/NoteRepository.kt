@@ -1,13 +1,13 @@
 package com.androiddevs.ktornoteapp.repositories
 
 import android.app.Application
-import com.androiddevs.ktornoteapp.data.local.NoteDao
-import com.androiddevs.ktornoteapp.data.local.entities.LocallyDeletedNoteId
-import com.androiddevs.ktornoteapp.data.local.entities.Note
-import com.androiddevs.ktornoteapp.data.remote.NoteApi
-import com.androiddevs.ktornoteapp.data.remote.requests.AccountRequest
-import com.androiddevs.ktornoteapp.data.remote.requests.AddOwnerRequest
-import com.androiddevs.ktornoteapp.data.remote.requests.DeleteNoteRequest
+import com.androiddevs.ktornoteapp.core.data.local.NoteDao
+import com.androiddevs.ktornoteapp.core.data.local.entities.LocallyDeletedNoteId
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.remote.NoteApi
+import com.androiddevs.ktornoteapp.core.data.remote.requests.AccountRequest
+import com.androiddevs.ktornoteapp.core.data.remote.requests.AddOwnerRequest
+import com.androiddevs.ktornoteapp.core.data.remote.requests.DeleteNoteRequest
 import com.androiddevs.ktornoteapp.other.Resource
 import com.androiddevs.ktornoteapp.other.checkForInternetConnection
 import com.androiddevs.ktornoteapp.other.networkBoundResource

@@ -1,5 +1,6 @@
 package com.androiddevs.ktornoteapp.ui.auth
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.os.Bundle
@@ -11,7 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.androiddevs.ktornoteapp.R
-import com.androiddevs.ktornoteapp.data.remote.BasicAuthInterceptor
+import com.androiddevs.ktornoteapp.core.data.remote.BasicAuthInterceptor
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_PASSWORD
 import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
@@ -38,6 +39,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     private var curEmail: String? = null
     private var curPassword: String? = null
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

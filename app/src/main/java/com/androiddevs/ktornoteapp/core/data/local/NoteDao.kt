@@ -1,12 +1,12 @@
-package com.androiddevs.ktornoteapp.data.local
+package com.androiddevs.ktornoteapp.core.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.androiddevs.ktornoteapp.data.local.entities.LocallyDeletedNoteId
-import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.local.entities.LocallyDeletedNoteId
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,10 +1,10 @@
-package com.androiddevs.ktornoteapp.data.remote
+package com.androiddevs.ktornoteapp.core.data.remote
 
-import com.androiddevs.ktornoteapp.data.local.entities.Note
-import com.androiddevs.ktornoteapp.data.remote.requests.AccountRequest
-import com.androiddevs.ktornoteapp.data.remote.requests.AddOwnerRequest
-import com.androiddevs.ktornoteapp.data.remote.requests.DeleteNoteRequest
-import com.androiddevs.ktornoteapp.data.remote.responses.SimpleResponse
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.remote.requests.AccountRequest
+import com.androiddevs.ktornoteapp.core.data.remote.requests.AddOwnerRequest
+import com.androiddevs.ktornoteapp.core.data.remote.requests.DeleteNoteRequest
+import com.androiddevs.ktornoteapp.core.data.remote.responses.SimpleResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body

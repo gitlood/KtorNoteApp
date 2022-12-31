@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.data.remote.requests
+package com.androiddevs.ktornoteapp.core.data.remote.requests
 
 data class AccountRequest(
     val email: String,

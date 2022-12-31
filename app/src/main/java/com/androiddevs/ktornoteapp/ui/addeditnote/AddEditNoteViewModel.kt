@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.other.Event
 import com.androiddevs.ktornoteapp.other.Resource
 import com.androiddevs.ktornoteapp.repositories.NoteRepository

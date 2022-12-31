@@ -1,7 +1,7 @@
-package com.androiddevs.ktornoteapp.ui.notes
+package com.androiddevs.ktornoteapp.notes.ui
 
 import androidx.lifecycle.*
-import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.other.Event
 import com.androiddevs.ktornoteapp.other.Resource
 import com.androiddevs.ktornoteapp.repositories.NoteRepository

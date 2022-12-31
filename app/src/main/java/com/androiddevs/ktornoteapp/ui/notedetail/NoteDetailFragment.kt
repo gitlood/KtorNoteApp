@@ -11,7 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
-import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.other.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.androiddevs.ktornoteapp.ui.dialogues.AddOwnerDialogueFragment

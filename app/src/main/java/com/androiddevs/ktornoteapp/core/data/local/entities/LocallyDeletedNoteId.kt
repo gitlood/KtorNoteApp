@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.data.local.entities
+package com.androiddevs.ktornoteapp.core.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

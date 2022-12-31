@@ -10,7 +10,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
-import com.androiddevs.ktornoteapp.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.other.Constants.DEFAULT_NOTE_COLOR
 import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
