@@ -13,7 +13,6 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -57,6 +56,7 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
         rvNotes = view.findViewById(R.id.rvNotes)
         setupRecyclerView()
         subscribeToObservers()
+        setupSwipeRefreshLayout()
 
         // The usage of an interface lets you inject your own implementation
         val menuHost: MenuHost = requireActivity()
@@ -131,6 +131,12 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
                         viewModel.deleteLocallyDeletedNoteId(note.id)
                     }
                 }.show()
+        }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.syncAllNotes()
         }
     }
 
