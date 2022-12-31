@@ -13,11 +13,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.remote.BasicAuthInterceptor
-import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
-import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_PASSWORD
-import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
-import com.androiddevs.ktornoteapp.other.Constants.NO_PASSWORD
-import com.androiddevs.ktornoteapp.other.Status
+import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_PASSWORD
+import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint

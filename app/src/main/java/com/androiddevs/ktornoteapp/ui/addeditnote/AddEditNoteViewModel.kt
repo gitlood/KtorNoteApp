@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
-import com.androiddevs.ktornoteapp.other.Event
-import com.androiddevs.ktornoteapp.other.Resource
+import com.androiddevs.ktornoteapp.core.util.Event
+import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi

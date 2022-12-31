@@ -8,9 +8,9 @@ import androidx.security.crypto.MasterKey
 import com.androiddevs.ktornoteapp.core.data.local.NotesDatabase
 import com.androiddevs.ktornoteapp.core.data.remote.BasicAuthInterceptor
 import com.androiddevs.ktornoteapp.core.data.remote.NoteApi
-import com.androiddevs.ktornoteapp.other.Constants.BASE_URL
-import com.androiddevs.ktornoteapp.other.Constants.DATABASE_NAME
-import com.androiddevs.ktornoteapp.other.Constants.ENCRYPTED_SHARED_PREF_NAME
+import com.androiddevs.ktornoteapp.core.util.Constants.BASE_URL
+import com.androiddevs.ktornoteapp.core.util.Constants.DATABASE_NAME
+import com.androiddevs.ktornoteapp.core.util.Constants.ENCRYPTED_SHARED_PREF_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,6 +1,6 @@
 package com.androiddevs.ktornoteapp.core.data.remote
 
-import com.androiddevs.ktornoteapp.other.Constants.IGNORE_AUTH_URLS
+import com.androiddevs.ktornoteapp.core.util.Constants.IGNORE_AUTH_URLS
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Response

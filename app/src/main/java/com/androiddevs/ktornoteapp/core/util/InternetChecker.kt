@@ -1,4 +1,6 @@
-package com.androiddevs.ktornoteapp.other
+@file:Suppress("DEPRECATION")
+
+package com.androiddevs.ktornoteapp.core.util
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -11,10 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
-import com.androiddevs.ktornoteapp.other.Constants.DEFAULT_NOTE_COLOR
-import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
-import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
-import com.androiddevs.ktornoteapp.other.Status
+import com.androiddevs.ktornoteapp.core.util.Constants.DEFAULT_NOTE_COLOR
+import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.androiddevs.ktornoteapp.ui.dialogues.ColorPickerDialogueFragment
 import dagger.hilt.android.AndroidEntryPoint

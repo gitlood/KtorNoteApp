@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.other
+package com.androiddevs.ktornoteapp.core.util
 
 import kotlinx.coroutines.flow.*
 

@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.other
+package com.androiddevs.ktornoteapp.core.util
 
 open class Event<out T>(private val content: T) {
 

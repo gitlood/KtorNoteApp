@@ -21,11 +21,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.notes.ui.adapters.NoteAdapter
-import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_EMAIL
-import com.androiddevs.ktornoteapp.other.Constants.KEY_LOGGED_IN_PASSWORD
-import com.androiddevs.ktornoteapp.other.Constants.NO_EMAIL
-import com.androiddevs.ktornoteapp.other.Constants.NO_PASSWORD
-import com.androiddevs.ktornoteapp.other.Status
+import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_PASSWORD
+import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.ui.BaseFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar

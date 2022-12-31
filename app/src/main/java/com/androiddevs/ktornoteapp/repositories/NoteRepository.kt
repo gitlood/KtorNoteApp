@@ -8,12 +8,13 @@ import com.androiddevs.ktornoteapp.core.data.remote.NoteApi
 import com.androiddevs.ktornoteapp.core.data.remote.requests.AccountRequest
 import com.androiddevs.ktornoteapp.core.data.remote.requests.AddOwnerRequest
 import com.androiddevs.ktornoteapp.core.data.remote.requests.DeleteNoteRequest
-import com.androiddevs.ktornoteapp.other.Resource
-import com.androiddevs.ktornoteapp.other.checkForInternetConnection
-import com.androiddevs.ktornoteapp.other.networkBoundResource
+import com.androiddevs.ktornoteapp.core.util.Resource
+import com.androiddevs.ktornoteapp.core.util.checkForInternetConnection
+import com.androiddevs.ktornoteapp.core.util.networkBoundResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -24,16 +25,21 @@ class NoteRepository @Inject constructor(
 ) {
 
     suspend fun insertNote(note: Note) {
-        val response = try {
-            noteApi.addNote(note)
-        } catch (e: Exception) {
-            null
-        }
+        val response = addNote(note)
         if (response != null && response.isSuccessful) {
             noteDao.insertNote(note.apply { isSynced = true })
         } else {
             noteDao.insertNote(note)
         }
+    }
+
+    private suspend fun addNote(note: Note): Response<ResponseBody>? {
+        val response = try {
+            noteApi.addNote(note)
+        } catch (e: Exception) {
+            null
+        }
+        return response
     }
 
     suspend fun insertNotes(notes: List<Note>) {
