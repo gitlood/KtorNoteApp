@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androiddevs.ktornoteapp.core.util.Resource
-import com.androiddevs.ktornoteapp.repositories.NoteRepository
+import com.androiddevs.ktornoteapp.repositories.NoteRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel() {
+class AuthViewModel @Inject constructor(private val repository: NoteRepositoryImpl) : ViewModel() {
 
     private val _loginStatus = MutableLiveData<Resource<String>>()
     val loginStatus: LiveData<Resource<String>> = _loginStatus

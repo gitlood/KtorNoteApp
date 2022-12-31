@@ -4,14 +4,14 @@ import androidx.lifecycle.*
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Event
 import com.androiddevs.ktornoteapp.core.util.Resource
-import com.androiddevs.ktornoteapp.repositories.NoteRepository
+import com.androiddevs.ktornoteapp.repositories.NoteRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(
-    private val repository: NoteRepository
+    private val repository: NoteRepositoryImpl
 ) : ViewModel() {
 
     private val _forceUpdate = MutableLiveData(false)

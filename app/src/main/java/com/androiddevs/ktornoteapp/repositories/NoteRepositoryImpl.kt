@@ -11,6 +11,7 @@ import com.androiddevs.ktornoteapp.core.data.remote.requests.DeleteNoteRequest
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.checkForInternetConnection
 import com.androiddevs.ktornoteapp.core.util.networkBoundResource
+import com.androiddevs.ktornoteapp.repositories.interfaces.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -18,15 +19,15 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import javax.inject.Inject
 
-class NoteRepository @Inject constructor(
+class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
     private val noteApi: NoteApi,
     private val context: Application
-) {
+) : NoteRepository {
 
-    private var curNotesResponse: Response<List<Note>>? = null
+    override var curNotesResponse: Response<List<Note>>? = null
 
-    fun getAllNotes(): Flow<Resource<List<Note>>> {
+    override fun getAllNotes(): Flow<Resource<List<Note>>> {
         return networkBoundResource(
             query = {
                 noteDao.getAllNotes()
@@ -46,9 +47,9 @@ class NoteRepository @Inject constructor(
         )
     }
 
-    fun observeNoteByID(noteID: String) = noteDao.observeNoteById(noteID)
+    override fun observeNoteByID(noteID: String) = noteDao.observeNoteById(noteID)
 
-    suspend fun insertNote(note: Note) {
+    override suspend fun insertNote(note: Note) {
         val response = addNote(note)
         if (response != null && response.isSuccessful) {
             noteDao.insertNote(note.apply { isSynced = true })
@@ -57,7 +58,7 @@ class NoteRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteNote(noteID: String) {
+    override suspend fun deleteNote(noteID: String) {
         val response = try {
             noteApi.deleteNote(DeleteNoteRequest(noteID))
         } catch (e: Exception) {
@@ -71,26 +72,30 @@ class NoteRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteLocallyDeletedNoteID(deletedNoteId: String) {
+    override suspend fun deleteLocallyDeletedNoteID(deletedNoteId: String) {
         noteDao.deleteNoteById(deletedNoteId)
     }
 
-    suspend fun getNoteById(noteId: String) = noteDao.getNoteById(noteId)
+    override suspend fun getNoteById(noteId: String) = noteDao.getNoteById(noteId)
 
-    suspend fun addOwnerToNote(owner: String, noteID: String) = withContext(Dispatchers.IO) {
-        try {
-            val response = noteApi.addOwnerToNote(AddOwnerRequest(owner, noteID))
-            if (response.isSuccessful && response.body()!!.successful) {
-                Resource.success(response.body()?.message)
-            } else {
-                Resource.error(response.body()?.message ?: response.message(), null)
+    override suspend fun addOwnerToNote(owner: String, noteID: String) =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = noteApi.addOwnerToNote(AddOwnerRequest(owner, noteID))
+                if (response.isSuccessful && response.body()!!.successful) {
+                    Resource.success(response.body()?.message)
+                } else {
+                    Resource.error(response.body()?.message ?: response.message(), null)
+                }
+            } catch (e: Exception) {
+                Resource.error(
+                    "Couldn't connect to the servers. Check your internet connection",
+                    null
+                )
             }
-        } catch (e: Exception) {
-            Resource.error("Couldn't connect to the servers. Check your internet connection", null)
         }
-    }
 
-    suspend fun register(email: String, password: String) = withContext(Dispatchers.IO) {
+    override suspend fun register(email: String, password: String) = withContext(Dispatchers.IO) {
         try {
             val response = noteApi.register(AccountRequest(email, password))
             if (response.isSuccessful && response.body()!!.successful) {
@@ -103,7 +108,7 @@ class NoteRepository @Inject constructor(
         }
     }
 
-    suspend fun login(email: String, password: String) = withContext(Dispatchers.IO) {
+    override suspend fun login(email: String, password: String) = withContext(Dispatchers.IO) {
         try {
             val response = noteApi.login(AccountRequest(email, password))
             if (response.isSuccessful && response.body()!!.successful) {
@@ -116,7 +121,7 @@ class NoteRepository @Inject constructor(
         }
     }
 
-    private suspend fun syncNotes() {
+    override suspend fun syncNotes() {
         val locallyDeletedNoteIds = noteDao.getAllLocallyDeletedNoteIDS()
         locallyDeletedNoteIds.forEach { id -> deleteNote(id.deletedNoteID) }
 
@@ -131,7 +136,7 @@ class NoteRepository @Inject constructor(
         }
     }
 
-    private suspend fun addNote(note: Note): Response<ResponseBody>? {
+    override suspend fun addNote(note: Note): Response<ResponseBody>? {
         val response = try {
             noteApi.addNote(note)
         } catch (e: Exception) {
@@ -140,7 +145,7 @@ class NoteRepository @Inject constructor(
         return response
     }
 
-    private suspend fun insertNotes(notes: List<Note>) {
+    override suspend fun insertNotes(notes: List<Note>) {
         notes.forEach {
             insertNote(it)
         }
