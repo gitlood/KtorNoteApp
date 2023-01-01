@@ -5,26 +5,18 @@
     app:startDestination="@id/authFragment">
 
     <fragment
-        android:id="@+id/addEditNoteFragment"
-        android:name="com.androiddevs.ktornoteapp.addeditnote.AddEditNoteFragment"
-        android:label="AddEditNoteFragment" >
-        <argument
-            android:name="id"
-            app:argType="string" />
-    </fragment>
-    <fragment
         android:id="@+id/notesFragment"
         android:name="com.androiddevs.ktornoteapp.notes.ui.NotesFragment"
         android:label="NotesFragment" >
-        <action
-            android:id="@+id/action_notesFragment_to_addEditNoteFragment"
-            app:destination="@id/addEditNoteFragment" />
         <action
             android:id="@+id/action_notesFragment_to_noteDetailFragment"
             app:destination="@id/noteDetailFragment" />
         <action
             android:id="@+id/action_notesFragment_to_authFragment"
             app:destination="@id/authFragment" />
+        <action
+            android:id="@+id/action_notesFragment_to_addEditNoteFragment"
+            app:destination="@id/addEditNoteFragment" />
     </fragment>
     <fragment
         android:id="@+id/authFragment"
@@ -38,9 +30,17 @@
         android:id="@+id/noteDetailFragment"
         android:name="com.androiddevs.ktornoteapp.notedetail.ui.NoteDetailFragment"
         android:label="NoteDetailFragment" >
+        <argument
+            android:name="id"
+            app:argType="string" />
         <action
             android:id="@+id/action_noteDetailFragment_to_addEditNoteFragment"
             app:destination="@id/addEditNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditNoteFragment"
+        android:name="com.androiddevs.ktornoteapp.addeditnote.ui.AddEditNoteFragment"
+        android:label="AddEditNoteFragment" >
         <argument
             android:name="id"
             app:argType="string" />
