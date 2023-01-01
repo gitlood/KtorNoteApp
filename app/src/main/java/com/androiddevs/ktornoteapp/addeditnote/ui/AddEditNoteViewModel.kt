@@ -20,7 +20,7 @@ import javax.inject.Inject
 class AddEditNoteViewModel @Inject constructor(private val repository: NoteRepository) :
     ViewModel() {
 
-    private val _note = MutableStateFlow<Event<Resource<Note>>>(Event(Resource.loading(null)))
+    private val _note = MutableStateFlow<Event<Resource<Note>>>(Event(Resource.waiting(null)))
     val note: StateFlow<Event<Resource<Note>>> = _note.asStateFlow()
 
     @OptIn(DelicateCoroutinesApi::class)

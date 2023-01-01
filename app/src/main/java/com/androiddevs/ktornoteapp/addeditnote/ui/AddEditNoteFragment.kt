@@ -17,6 +17,7 @@ import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.androiddevs.ktornoteapp.core.util.Constants.DEFAULT_NOTE_COLOR
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
+import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -113,20 +114,31 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
             it.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
-                        val note = result.data!!
-                        curNote = note
-                        etNoteTitle.setText(note.title)
-                        etNoteContent.setText(note.content)
-                        changeViewNoteColor(note.color)
+                        onSuccess(result)
                     }
                     Status.ERROR -> {
-                        showSnackBar(result.message ?: "Note not found")
+                        onError(result)
                     }
                     Status.LOADING -> {
+                        /* NO_OP */
+                    }
+                    Status.WAITING->{
                         /* NO_OP */
                     }
                 }
             }
         }
+    }
+
+    private fun onError(result: Resource<Note>) {
+        showSnackBar(result.message ?: "Note not found")
+    }
+
+    private fun onSuccess(result: Resource<Note>) {
+        val note = result.data!!
+        curNote = note
+        etNoteTitle.setText(note.title)
+        etNoteContent.setText(note.content)
+        changeViewNoteColor(note.color)
     }
 }

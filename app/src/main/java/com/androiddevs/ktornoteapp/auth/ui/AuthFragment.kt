@@ -9,19 +9,22 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.remote.BasicAuthInterceptor
+import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -138,11 +141,11 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
         basicAuthInterceptor.password = password
     }
 
-    private fun subscribeToObservers() {
-        viewModel.loginStatus.observe(viewLifecycleOwner) { loginStatus ->
+    private fun subscribeToObservers() = lifecycleScope.launch {
+        viewModel.loginStatus.collectLatest { loginStatus ->
             onLoginStatus(loginStatus)
         }
-        viewModel.registerStatus.observe(viewLifecycleOwner) { registerStatus ->
+        viewModel.registerStatus.collectLatest { registerStatus ->
             onRegisterStatus(registerStatus)
         }
     }
@@ -158,6 +161,9 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
                 }
                 Status.LOADING -> {
                     onLoginLoading()
+                }
+                Status.WAITING->{
+                    /* NO_OP */
                 }
             }
         }
@@ -175,6 +181,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
                 Status.LOADING -> {
                     onRegisterLoading()
                 }
+                Status.WAITING ->{}
             }
         }
     }

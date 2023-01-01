@@ -126,6 +126,9 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
                     Status.LOADING -> {
                         addOwnerProgressBar.visibility = View.VISIBLE
                     }
+                    Status.WAITING->{
+                        addOwnerProgressBar.visibility = View.GONE
+                    }
                 }
             }
         }
