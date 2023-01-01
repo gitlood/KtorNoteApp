@@ -27,21 +27,9 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Should Insert Note - When Provided with Note`() {
-
-        //Given
-        fakeNotesRepository.noteDatabase.clear()
-
-        val note = Note(
-            title = "A title",
-            content = "Some content",
-            date = 0L,
-            owners = listOf("Me"),
-            color = Color.BLACK.toString()
-        )
-
         //When
         runTest {
-            addEditNoteViewModel.insertNote(note)
+            addEditNoteViewModel.insertNote(getNote())
         }
 
         //Then
@@ -51,15 +39,7 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
     @Test
     fun `Should get Note - When ID exists`() {
         //Given
-        fakeNotesRepository.noteDatabase.clear()
-
-        val note = Note(
-            title = "A title",
-            content = "Some content",
-            date = 0L,
-            owners = listOf("Me"),
-            color = Color.BLACK.toString()
-        )
+        val note = getNote()
 
         // When
         runTest {
@@ -75,7 +55,6 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
                         data = note,
                         message = null
                     )
-
         ).isTrue()
     }
 
@@ -83,15 +62,7 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
     @Test
     fun `Should get Null - When ID doesn't exist`() {
         //Given
-        fakeNotesRepository.noteDatabase.clear()
-
-        val note = Note(
-            title = "A title",
-            content = "Some content",
-            date = 0L,
-            owners = listOf("Me"),
-            color = Color.BLACK.toString()
-        )
+        val note = getNote()
 
         // When
         runTest {
@@ -108,5 +79,15 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
             )
 
         ).isTrue()
+    }
+
+    private fun getNote(): Note {
+        return Note(
+            title = "A title",
+            content = "Some content",
+            date = 0L,
+            owners = listOf("Me"),
+            color = Color.BLACK.toString()
+        )
     }
 }
