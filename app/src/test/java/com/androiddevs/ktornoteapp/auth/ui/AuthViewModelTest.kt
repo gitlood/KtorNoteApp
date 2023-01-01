@@ -24,7 +24,7 @@ class AuthViewModelTest : ViewModelTestBase() {
         authViewModel.login("", "password")
 
         //Then
-        assertThat(authViewModel.loginStatus.value == Resource.waiting(null)).isTrue()
+        assertThat(authViewModel.loginStatus.value).isEqualTo(Resource.waiting(null))
     }
 
     @Test
@@ -33,7 +33,7 @@ class AuthViewModelTest : ViewModelTestBase() {
         authViewModel.login("email", "")
 
         //Then
-        assertThat(authViewModel.loginStatus.value == Resource.waiting(null)).isTrue()
+        assertThat(authViewModel.loginStatus.value).isEqualTo(Resource.waiting(null))
     }
 
     @Test
@@ -45,8 +45,10 @@ class AuthViewModelTest : ViewModelTestBase() {
 
         //Then
         assertThat(
-            authViewModel.loginStatus.value == Resource.success(null)
-        ).isTrue()
+            authViewModel.loginStatus.value
+        ).isEqualTo(
+            Resource.success(null)
+        )
     }
 
     @Test
@@ -58,8 +60,10 @@ class AuthViewModelTest : ViewModelTestBase() {
 
         //Then
         assertThat(
-            authViewModel.loginStatus.value == Resource.error("Login failed", null)
-        ).isTrue()
+            authViewModel.loginStatus.value
+        ).isEqualTo(
+            Resource.error("Login failed", null)
+        )
     }
 
     @Test
@@ -69,11 +73,13 @@ class AuthViewModelTest : ViewModelTestBase() {
 
         //Then
         assertThat(
-            authViewModel.registerStatus.value == Resource.error(
+            authViewModel.registerStatus.value
+        ).isEqualTo(
+            Resource.error(
                 "Please fill out all the fields",
                 null
             )
-        ).isTrue()
+        )
     }
 
     @Test
@@ -83,8 +89,10 @@ class AuthViewModelTest : ViewModelTestBase() {
 
         //Then
         assertThat(
-            authViewModel.registerStatus.value == Resource.error("The passwords do not match", null)
-        ).isTrue()
+            authViewModel.registerStatus.value
+        ).isEqualTo(
+            Resource.error("The passwords do not match", null)
+        )
     }
 
     @Test
@@ -96,7 +104,7 @@ class AuthViewModelTest : ViewModelTestBase() {
 
         //Then
         assertThat(
-            authViewModel.registerStatus.value == Resource.success("Success")
-        ).isTrue()
+            authViewModel.registerStatus.value
+        ).isEqualTo(Resource.success("Success"))
     }
 }

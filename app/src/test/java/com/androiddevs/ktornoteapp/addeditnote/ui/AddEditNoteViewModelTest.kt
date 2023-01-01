@@ -21,7 +21,6 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
         addEditNoteViewModel = AddEditNoteViewModel(fakeNotesRepository)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Should Insert Note - When Provided with Note`() {
         //When
@@ -30,7 +29,7 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
         }
 
         //Then
-        assertThat(fakeNotesRepository.noteDatabase.size == 1).isTrue()
+        assertThat(fakeNotesRepository.noteDatabase.size).isEqualTo(1)
     }
 
     @Test
@@ -46,13 +45,14 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
 
         // Then
         assertThat(
-            addEditNoteViewModel.note.value.peekContent() ==
-                    Resource(
-                        status = Status.SUCCESS,
-                        data = note,
-                        message = null
-                    )
-        ).isTrue()
+            addEditNoteViewModel.note.value.peekContent()
+        ).isEqualTo(
+            Resource(
+                status = Status.SUCCESS,
+                data = note,
+                message = null
+            )
+        )
     }
 
 
@@ -69,13 +69,14 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
 
         // Then
         assertThat(
-            addEditNoteViewModel.note.value.peekContent() == Resource(
+            addEditNoteViewModel.note.value.peekContent()
+        ).isEqualTo(
+            Resource(
                 status = Status.ERROR,
                 data = null,
                 message = "Note not found"
             )
-
-        ).isTrue()
+        )
     }
 
     private fun getNote(): Note {
