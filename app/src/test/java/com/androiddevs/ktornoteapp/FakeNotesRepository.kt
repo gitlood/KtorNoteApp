@@ -50,7 +50,7 @@ class FakeNotesRepository : NoteRepository {
     }
 
     override suspend fun register(email: String, password: String): Resource<String> {
-        return Resource.success("Success")
+        return Resource.success(null)
     }
 
     override suspend fun login(email: String, password: String): Resource<String> {

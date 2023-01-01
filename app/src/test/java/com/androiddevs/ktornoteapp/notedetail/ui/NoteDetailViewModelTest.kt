@@ -1,7 +1,6 @@
 package com.androiddevs.ktornoteapp.notedetail.ui
 
 import com.androiddevs.ktornoteapp.ViewModelTestBase
-import com.androiddevs.ktornoteapp.core.util.Resource
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -27,13 +26,9 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
         noteDetailViewModel.addOwnerToNote("", "")
 
         //Then
-        assertThat(noteDetailViewModel.addOwnerStatus.value.peekContent()).isEqualTo(
-            Resource.error(
-                "The owner can't be empty",
-                null
-            )
-        )
-
+        noteDetailViewModel.addOwnerStatus.value.peekContent().run {
+            assertThat(message).isEqualTo("The owner can't be empty")
+            assertThat(data).isNull()
+        }
     }
-
 }

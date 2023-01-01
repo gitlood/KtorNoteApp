@@ -1,10 +1,14 @@
 package com.androiddevs.ktornoteapp.auth.ui
 
 import com.androiddevs.ktornoteapp.ViewModelTestBase
-import com.androiddevs.ktornoteapp.core.util.Resource
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -16,6 +20,12 @@ class AuthViewModelTest : ViewModelTestBase() {
     @Before
     fun setup() {
         authViewModel = AuthViewModel(fakeNotesRepository)
+        Dispatchers.setMain(Dispatchers.Unconfined)
+    }
+
+    @After
+    fun end() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -24,7 +34,11 @@ class AuthViewModelTest : ViewModelTestBase() {
         authViewModel.login("", "password")
 
         //Then
-        assertThat(authViewModel.loginStatus.value).isEqualTo(Resource.waiting(null))
+        authViewModel.loginStatus.value.run {
+            assertThat(message).isNull()
+            assertThat(data).isNull()
+            assertThat(status).isEqualTo(Status.WAITING)
+        }
     }
 
     @Test
@@ -33,38 +47,40 @@ class AuthViewModelTest : ViewModelTestBase() {
         authViewModel.login("email", "")
 
         //Then
-        assertThat(authViewModel.loginStatus.value).isEqualTo(Resource.waiting(null))
+        authViewModel.loginStatus.value.run {
+            assertThat(message).isNull()
+            assertThat(data).isNull()
+            assertThat(status).isEqualTo(Status.WAITING)
+        }
     }
 
     @Test
-    fun `Login should return Success - When valid email and password combination is provided`() {
-        //When
+    fun `Login should return Success - When valid email and password combination is provided`() =
         runTest {
+            //When
             authViewModel.login("email@email.com", "password")
-        }
 
-        //Then
-        assertThat(
-            authViewModel.loginStatus.value
-        ).isEqualTo(
-            Resource.success(null)
-        )
-    }
+            //Then
+            authViewModel.loginStatus.value.run {
+                assertThat(message).isNull()
+                assertThat(data).isNull()
+                assertThat(status).isEqualTo(Status.SUCCESS)
+            }
+        }
 
     @Test
-    fun `Login should return Error - When Invalid email and password combination is provided`() {
-        //When
+    fun `Login should return Error - When Invalid email and password combination is provided`() =
         runTest {
+            //When
             authViewModel.login("email", "wrongpassword")
-        }
 
-        //Then
-        assertThat(
-            authViewModel.loginStatus.value
-        ).isEqualTo(
-            Resource.error("Login failed", null)
-        )
-    }
+            //Then
+            authViewModel.loginStatus.value.run {
+                assertThat(message).isEqualTo("Login failed")
+                assertThat(data).isNull()
+                assertThat(status).isEqualTo(Status.ERROR)
+            }
+        }
 
     @Test
     fun `Register should return Error - When All Field aren't populated`() {
@@ -72,14 +88,11 @@ class AuthViewModelTest : ViewModelTestBase() {
         authViewModel.register("", "", "")
 
         //Then
-        assertThat(
-            authViewModel.registerStatus.value
-        ).isEqualTo(
-            Resource.error(
-                "Please fill out all the fields",
-                null
-            )
-        )
+        authViewModel.registerStatus.value.run {
+            assertThat(message).isEqualTo("Please fill out all the fields")
+            assertThat(data).isNull()
+            assertThat(status).isEqualTo(Status.ERROR)
+        }
     }
 
     @Test
@@ -88,23 +101,24 @@ class AuthViewModelTest : ViewModelTestBase() {
         authViewModel.register("email@email.com", "password", "apassword")
 
         //Then
-        assertThat(
-            authViewModel.registerStatus.value
-        ).isEqualTo(
-            Resource.error("The passwords do not match", null)
-        )
+        authViewModel.registerStatus.value.run {
+            assertThat(message).isEqualTo("The passwords do not match")
+            assertThat(data).isNull()
+            assertThat(status).isEqualTo(Status.ERROR)
+        }
     }
 
     @Test
-    fun `Register should return Success - When All Fields are populated and password - repeated password match`() {
-        //When
+    fun `Register should return Success - When All Fields are populated and password - repeated password match`() =
         runTest {
+            //When
             authViewModel.register("email@email.com", "password", "password")
-        }
 
-        //Then
-        assertThat(
-            authViewModel.registerStatus.value
-        ).isEqualTo(Resource.success("Success"))
-    }
+            //Then
+            authViewModel.registerStatus.value.run {
+                assertThat(message).isNull()
+                assertThat(data).isNull()
+                assertThat(status).isEqualTo(Status.SUCCESS)
+            }
+        }
 }
