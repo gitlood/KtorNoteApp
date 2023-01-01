@@ -8,16 +8,19 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
-import com.androiddevs.ktornoteapp.core.util.Status
 import com.androiddevs.ktornoteapp.core.ui.BaseFragment
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 const val ADD_OWNER_DIALOG_TAG = "ADD_OWNER_DIALOG_TAG"
 
@@ -111,9 +114,9 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
         markwon.setParsedMarkdown(tvNoteContent, markdown)
     }
 
-    private fun subscribeToObservers() {
-        viewModel.addOwnerStatus.observe(viewLifecycleOwner) { event ->
-            event?.getContentIfNotHandled()?.let { result ->
+    private fun subscribeToObservers() = lifecycleScope.launch {
+        viewModel.addOwnerStatus.collectLatest { event ->
+            event.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         addOwnerProgressBar.visibility = View.GONE
@@ -126,7 +129,7 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
                     Status.LOADING -> {
                         addOwnerProgressBar.visibility = View.VISIBLE
                     }
-                    Status.WAITING->{
+                    Status.WAITING -> {
                         addOwnerProgressBar.visibility = View.GONE
                     }
                 }

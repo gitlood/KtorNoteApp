@@ -10,11 +10,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(JUnit4::class)
 class AddEditNoteViewModelTest : ViewModelTestBase() {
 
     private lateinit var addEditNoteViewModel: AddEditNoteViewModel
