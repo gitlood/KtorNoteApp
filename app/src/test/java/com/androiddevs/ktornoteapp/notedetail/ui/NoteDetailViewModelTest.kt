@@ -1,6 +1,7 @@
 package com.androiddevs.ktornoteapp.notedetail.ui
 
 import com.androiddevs.ktornoteapp.ViewModelTestBase
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +22,7 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Should return Error - if owner or note ID is Empty`() {
+    fun `Owner failing to be added to note - if owner or note ID is Empty`() {
         //When
         noteDetailViewModel.addOwnerToNote("", "")
 
@@ -29,6 +30,7 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
         noteDetailViewModel.addOwnerStatus.value.peekContent().run {
             assertThat(message).isEqualTo("The owner can't be empty")
             assertThat(data).isNull()
+            assertThat(status).isEqualTo(Status.ERROR)
         }
     }
 }

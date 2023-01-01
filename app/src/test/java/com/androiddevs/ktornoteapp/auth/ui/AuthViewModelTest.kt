@@ -29,7 +29,7 @@ class AuthViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Login should remain waiting - When Email is Empty`() {
+    fun `Login failing - When Email is Empty`() {
         //When
         authViewModel.login("", "password")
 
@@ -42,7 +42,7 @@ class AuthViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Login should remain waiting - When Password is Empty`() {
+    fun `Login failing - When Password is Empty`() {
         //When
         authViewModel.login("email", "")
 
@@ -55,7 +55,7 @@ class AuthViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Login should return Success - When valid email and password combination is provided`() =
+    fun `Login successful - When valid email and password combination is provided`() =
         runTest {
             //When
             authViewModel.login("email@email.com", "password")
@@ -69,7 +69,7 @@ class AuthViewModelTest : ViewModelTestBase() {
         }
 
     @Test
-    fun `Login should return Error - When Invalid email and password combination is provided`() =
+    fun `Login returning error - When Invalid email and password combination is provided`() =
         runTest {
             //When
             authViewModel.login("email", "wrongpassword")
@@ -83,7 +83,7 @@ class AuthViewModelTest : ViewModelTestBase() {
         }
 
     @Test
-    fun `Register should return Error - When All Field aren't populated`() {
+    fun `Register returning error - When All Field aren't populated`() {
         //When
         authViewModel.register("", "", "")
 
