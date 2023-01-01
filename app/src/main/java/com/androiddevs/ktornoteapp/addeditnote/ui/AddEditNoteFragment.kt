@@ -53,7 +53,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
         viewNoteColor = view.findViewById<View>(R.id.viewNoteColor)
 
         if (args.id.isNotEmpty()) {
-            viewModel.getNoteById(args.id)
+            viewModel.loadNoteByID(args.id)
             subscribeToObservers()
         }
 

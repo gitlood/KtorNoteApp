@@ -3,11 +3,14 @@ package com.androiddevs.ktornoteapp.addeditnote.ui
 import android.graphics.Color
 import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
-import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -19,64 +22,56 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
     @Before
     fun setup() {
         addEditNoteViewModel = AddEditNoteViewModel(fakeNotesRepository)
+        Dispatchers.setMain(Dispatchers.Unconfined)
+    }
+
+    @After
+    fun end() {
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `Should Insert Note - When Provided with Note`() {
+    fun `Note added to database - When Provided with Note`() = runTest {
         //When
-        runTest {
-            addEditNoteViewModel.insertNote(getNote())
-        }
+        addEditNoteViewModel.insertNote(getNote())
 
         //Then
         assertThat(fakeNotesRepository.noteDatabase.size).isEqualTo(1)
     }
 
     @Test
-    fun `Should get Note - When ID exists`() {
+    fun `Note loading successfully - When ID exists`() = runTest {
         //Given
         val note = getNote()
+        fakeNotesRepository.insertNote(note)
 
         //When
-        runTest {
-            addEditNoteViewModel.insertNote(note)
-            addEditNoteViewModel.getNoteById(note.id)
-        }
+        addEditNoteViewModel.loadNoteByID(note.id)
 
         //Then
-        assertThat(
-            addEditNoteViewModel.note.value.peekContent()
-        ).isEqualTo(
-            Resource(
-                status = Status.SUCCESS,
-                data = note,
-                message = null
-            )
-        )
+        addEditNoteViewModel.note.value.peekContent().run {
+            assertThat(status).isEqualTo(Status.SUCCESS)
+            assertThat(data).isEqualTo(note)
+            assertThat(message).isNull()
+        }
+
     }
 
 
     @Test
-    fun `Should get Null - When ID doesn't exist`() {
+    fun `Note failing to load - When ID doesn't exist`() = runTest {
         //Given
-        val note = getNote()
+        addEditNoteViewModel.insertNote(getNote())
 
         //When
-        runTest {
-            addEditNoteViewModel.insertNote(note)
-            addEditNoteViewModel.getNoteById("invalid id")
-        }
+        addEditNoteViewModel.loadNoteByID("invalid id")
 
         //Then
-        assertThat(
-            addEditNoteViewModel.note.value.peekContent()
-        ).isEqualTo(
-            Resource(
-                status = Status.ERROR,
-                data = null,
-                message = "Note not found"
-            )
-        )
+        addEditNoteViewModel.note.value.peekContent().run {
+            assertThat(status).isEqualTo(Status.ERROR)
+            assertThat(data).isNull()
+            assertThat(message).isEqualTo("Note not found")
+        }
     }
 
     private fun getNote(): Note {

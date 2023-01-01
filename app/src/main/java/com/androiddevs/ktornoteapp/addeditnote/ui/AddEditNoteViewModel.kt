@@ -7,8 +7,6 @@ import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteReposit
 import com.androiddevs.ktornoteapp.core.util.Event
 import com.androiddevs.ktornoteapp.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,12 +21,11 @@ class AddEditNoteViewModel @Inject constructor(private val repository: NoteRepos
     private val _note = MutableStateFlow<Event<Resource<Note>>>(Event(Resource.waiting(null)))
     val note: StateFlow<Event<Resource<Note>>> = _note.asStateFlow()
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun insertNote(note: Note) = GlobalScope.launch {
+    fun insertNote(note: Note) = viewModelScope.launch {
         repository.insertNote(note)
     }
 
-    fun getNoteById(noteID: String) = viewModelScope.launch {
+    fun loadNoteByID(noteID: String) = viewModelScope.launch {
         val note = repository.getNoteById(noteID)
         note?.let { theNote ->
             _note.update { Event(Resource.success(theNote)) }
