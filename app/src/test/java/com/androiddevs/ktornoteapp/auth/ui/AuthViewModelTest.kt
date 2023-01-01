@@ -63,11 +63,9 @@ class AuthViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Register should return error - When All Field aren't populated`() {
+    fun `Register should return Error - When All Field aren't populated`() {
         //When
-        runTest {
-            authViewModel.register("", "", "")
-        }
+        authViewModel.register("", "", "")
 
         //Then
         assertThat(
@@ -75,6 +73,30 @@ class AuthViewModelTest : ViewModelTestBase() {
                 "Please fill out all the fields",
                 null
             )
+        ).isTrue()
+    }
+
+    @Test
+    fun `Register should return Error - When Password and Repeated Password don't match`() {
+        //When
+        authViewModel.register("email@email.com", "password", "apassword")
+
+        //Then
+        assertThat(
+            authViewModel.registerStatus.value == Resource.error("The passwords do not match", null)
+        ).isTrue()
+    }
+
+    @Test
+    fun `Register should return Success - When All Fields are populated and password - repeated password match`() {
+        //When
+        runTest {
+            authViewModel.register("email@email.com", "password", "password")
+        }
+
+        //Then
+        assertThat(
+            authViewModel.registerStatus.value == Resource.success("Success")
         ).isTrue()
     }
 }
