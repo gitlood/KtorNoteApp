@@ -57,11 +57,10 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
 
     }
 
-
     @Test
     fun `Note failing to load - When ID doesn't exist`() = runTest {
         //Given
-        addEditNoteViewModel.insertNote(getNote())
+        fakeNotesRepository.insertNote(getNote())
 
         //When
         addEditNoteViewModel.loadNoteByID("invalid id")
