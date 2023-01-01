@@ -2,7 +2,7 @@ package com.androiddevs.ktornoteapp.notedetail.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androiddevs.ktornoteapp.core.data.repositories.NoteRepositoryImpl
+import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import com.androiddevs.ktornoteapp.core.util.Event
 import com.androiddevs.ktornoteapp.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NoteDetailViewModel @Inject constructor(private val repository: NoteRepositoryImpl) :
+class NoteDetailViewModel @Inject constructor(private val repository: NoteRepository) :
     ViewModel() {
 
     private val _addOwnerStatus =

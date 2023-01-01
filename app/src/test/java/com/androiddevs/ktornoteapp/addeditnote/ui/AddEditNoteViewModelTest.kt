@@ -37,13 +37,13 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
         //Given
         val note = getNote()
 
-        // When
+        //When
         runTest {
             addEditNoteViewModel.insertNote(note)
             addEditNoteViewModel.getNoteById(note.id)
         }
 
-        // Then
+        //Then
         assertThat(
             addEditNoteViewModel.note.value.peekContent()
         ).isEqualTo(
@@ -61,13 +61,13 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
         //Given
         val note = getNote()
 
-        // When
+        //When
         runTest {
             addEditNoteViewModel.insertNote(note)
             addEditNoteViewModel.getNoteById("invalid id")
         }
 
-        // Then
+        //Then
         assertThat(
             addEditNoteViewModel.note.value.peekContent()
         ).isEqualTo(

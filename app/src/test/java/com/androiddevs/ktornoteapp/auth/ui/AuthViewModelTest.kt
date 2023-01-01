@@ -20,7 +20,7 @@ class AuthViewModelTest : ViewModelTestBase() {
 
     @Test
     fun `Login should remain waiting - When Email is Empty`() {
-        // When
+        //When
         authViewModel.login("", "password")
 
         //Then
