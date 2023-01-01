@@ -2,7 +2,7 @@ package com.androiddevs.ktornoteapp.auth.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androiddevs.ktornoteapp.core.data.repositories.NoteRepositoryImpl
+import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import com.androiddevs.ktornoteapp.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val repository: NoteRepositoryImpl) : ViewModel() {
+class AuthViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel() {
 
     private val _loginStatus = MutableStateFlow<Resource<String>>(Resource.waiting(null))
     val loginStatus: StateFlow<Resource<String>> = _loginStatus.asStateFlow()
@@ -23,13 +23,13 @@ class AuthViewModel @Inject constructor(private val repository: NoteRepositoryIm
 
     fun login(email: String, password: String) {
         _loginStatus.update { Resource.loading(null) }
-        if (email.isEmpty() || password.isEmpty()) {
-            _loginStatus.update { Resource.error("Please fill out all the fields", null) }
+        if (emailAndPasswordIsNotEmpty(email, password)) {
+            viewModelScope.launch {
+                val result = repository.login(email, password)
+                _loginStatus.update { result }
+            }
+        }else{
             return
-        }
-        viewModelScope.launch {
-            val result = repository.login(email, password)
-            _loginStatus.update { result }
         }
     }
 
@@ -44,6 +44,17 @@ class AuthViewModel @Inject constructor(private val repository: NoteRepositoryIm
             return
         }
         register(email, password)
+    }
+
+    private fun emailAndPasswordIsNotEmpty(
+        email: String,
+        password: String
+    ): Boolean {
+        if (email.isEmpty() || password.isEmpty()) {
+            _loginStatus.update { Resource.error("Please fill out all the fields", null) }
+            return false
+        }
+        return true
     }
 
     private fun register(email: String, password: String) {

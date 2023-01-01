@@ -1,40 +1,26 @@
 package com.androiddevs.ktornoteapp.addeditnote.ui
 
 import android.graphics.Color
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.androiddevs.ktornoteapp.FakeNotesRepository
+import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.androiddevs.ktornoteapp.util.MainCoroutineRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
-class AddEditNoteViewModelTest() {
-
-    @get:Rule
-    var rule: TestRule = InstantTaskExecutorRule()
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
-
-    private lateinit var fakeNotesRepository: FakeNotesRepository
+class AddEditNoteViewModelTest : ViewModelTestBase() {
 
     private lateinit var addEditNoteViewModel: AddEditNoteViewModel
 
     @Before
     fun setup() {
-        fakeNotesRepository = FakeNotesRepository()
         addEditNoteViewModel = AddEditNoteViewModel(fakeNotesRepository)
     }
 
