@@ -29,6 +29,7 @@ class AuthViewModel @Inject constructor(private val repository: NoteRepository) 
                 _loginStatus.update { result }
             }
         }else{
+            _loginStatus.update { Resource.waiting(null) }
             return
         }
     }

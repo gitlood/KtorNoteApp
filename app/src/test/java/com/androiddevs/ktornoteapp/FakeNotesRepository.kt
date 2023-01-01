@@ -54,7 +54,17 @@ class FakeNotesRepository : NoteRepository {
     }
 
     override suspend fun login(email: String, password: String): Resource<String> {
-        TODO("Not yet implemented")
+        val anEmail = "email@email.com"
+        val aPassword = "password"
+        return try {
+            if (email == anEmail && password == aPassword) {
+                Resource.success(null)
+            } else {
+                Resource.error("Login failed", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Couldn't connect to the servers. Check your internet connection", null)
+        }
     }
 
     override suspend fun syncNotes() {
