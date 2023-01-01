@@ -1,6 +1,5 @@
 package com.androiddevs.ktornoteapp.core.data.repositories.interfaces
 
-import androidx.lifecycle.LiveData
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +11,7 @@ interface NoteRepository {
 
     fun getAllNotes(): Flow<Resource<List<Note>>>
 
-    fun observeNoteByID(noteID: String): LiveData<Note>
+    fun observeNoteByID(noteID: String): Flow<Note>?
 
     suspend fun insertNote(note: Note)
 

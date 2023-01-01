@@ -1,8 +1,6 @@
 package com.androiddevs.ktornoteapp.addeditnote.ui
 
-import android.graphics.Color
 import com.androiddevs.ktornoteapp.ViewModelTestBase
-import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -71,15 +69,5 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
             assertThat(data).isNull()
             assertThat(message).isEqualTo("Note not found")
         }
-    }
-
-    private fun getNote(): Note {
-        return Note(
-            title = "A title",
-            content = "Some content",
-            date = 0L,
-            owners = listOf("Me"),
-            color = Color.BLACK.toString()
-        )
     }
 }

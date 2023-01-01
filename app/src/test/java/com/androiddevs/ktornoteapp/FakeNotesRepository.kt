@@ -1,9 +1,9 @@
 package com.androiddevs.ktornoteapp
 
-import androidx.lifecycle.LiveData
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import com.androiddevs.ktornoteapp.core.util.Resource
+import com.androiddevs.ktornoteapp.core.util.Status
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -20,7 +20,7 @@ class FakeNotesRepository : NoteRepository {
         TODO("Not yet implemented")
     }
 
-    override fun observeNoteByID(noteID: String): LiveData<Note> {
+    override fun observeNoteByID(noteID: String): Flow<Note> {
         TODO("Not yet implemented")
     }
 
@@ -46,7 +46,7 @@ class FakeNotesRepository : NoteRepository {
     }
 
     override suspend fun addOwnerToNote(owner: String, noteID: String): Resource<String> {
-        TODO("Not yet implemented")
+        return Resource(status = Status.SUCCESS, null, message = null)
     }
 
     override suspend fun register(email: String, password: String): Resource<String> {

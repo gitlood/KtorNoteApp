@@ -135,13 +135,13 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail) {
                 }
             }
         }
-        viewModel.observeNoteByID(args.id).observe(viewLifecycleOwner) { note ->
-            note?.let {
+        viewModel.observeNoteByID(args.id)?.collectLatest { note ->
+            note.let {
                 tvNoteTitle.text = note.title
                 setMarkdownText(note.content, tvNoteContent)
                 curNote = note
-            } ?: showSnackBar("Note not found")
-        }
+            }
+        } ?: showSnackBar("Note not found")
     }
 
 }

@@ -8,10 +8,10 @@ import com.androiddevs.ktornoteapp.core.data.remote.NoteApi
 import com.androiddevs.ktornoteapp.core.data.remote.requests.AccountRequest
 import com.androiddevs.ktornoteapp.core.data.remote.requests.AddOwnerRequest
 import com.androiddevs.ktornoteapp.core.data.remote.requests.DeleteNoteRequest
+import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.checkForInternetConnection
 import com.androiddevs.ktornoteapp.core.util.networkBoundResource
-import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -47,7 +47,7 @@ class NoteRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun observeNoteByID(noteID: String) = noteDao.observeNoteById(noteID)
+    override fun observeNoteByID(noteID: String): Flow<Note>? = noteDao.observeNoteById(noteID)
 
     override suspend fun insertNote(note: Note) {
         val response = addNote(note)

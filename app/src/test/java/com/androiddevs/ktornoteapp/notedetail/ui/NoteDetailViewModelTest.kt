@@ -3,9 +3,16 @@ package com.androiddevs.ktornoteapp.notedetail.ui
 import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NoteDetailViewModelTest : ViewModelTestBase() {
 
     private lateinit var noteDetailViewModel: NoteDetailViewModel
@@ -13,16 +20,29 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
     @Before
     fun setup() {
         noteDetailViewModel = NoteDetailViewModel(fakeNotesRepository)
+        Dispatchers.setMain(Dispatchers.Unconfined)
+    }
+
+    @After
+    fun end() {
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `Should return Success - if owner and note ID is in Database`() {
-        //Given
+    fun `Owner being added - When owner and note ID is Not Empty`() = runTest {
+        //When
+        noteDetailViewModel.addOwnerToNote("email@gmail.com", "123")
 
+        //Then
+        noteDetailViewModel.addOwnerStatus.value.peekContent().run {
+            assertThat(message).isNull()
+            assertThat(data).isNull()
+            assertThat(status).isEqualTo(Status.SUCCESS)
+        }
     }
 
     @Test
-    fun `Owner failing to be added to note - if owner or note ID is Empty`() {
+    fun `Owner failing to be added to note - When owner or note ID is Empty`() {
         //When
         noteDetailViewModel.addOwnerToNote("", "")
 
@@ -33,4 +53,16 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
             assertThat(status).isEqualTo(Status.ERROR)
         }
     }
+
+    @Test
+    fun `Observe note id success - When note with noteID is in database`() = runTest {
+        //Given
+        fakeNotesRepository.addNote(getNote())
+
+        //When
+        noteDetailViewModel.observeNoteByID(getNote().id)
+
+        //Then
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.androiddevs.ktornoteapp.core.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -25,7 +24,7 @@ interface NoteDao {
     suspend fun deleteAllNotes()
 
     @Query("SELECT * FROM notes WHERE id = :noteID")
-    fun observeNoteById(noteID: String): LiveData<Note>
+    fun observeNoteById(noteID: String): Flow<Note>?
 
     @Query("SELECT * FROM notes WHERE id = :noteID")
     suspend fun getNoteById(noteID: String): Note?
