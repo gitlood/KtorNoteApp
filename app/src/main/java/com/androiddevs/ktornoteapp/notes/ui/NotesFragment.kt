@@ -13,6 +13,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -33,6 +34,8 @@ import com.androiddevs.ktornoteapp.notes.ui.adapters.NoteAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -142,9 +145,9 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
         ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(this)
     }
 
-    private fun subscribeToObservers() {
-        viewModel.allNotes.observe(viewLifecycleOwner) {
-            it?.let { event ->
+    private fun subscribeToObservers() = lifecycleScope.launch {
+        viewModel.allNotes.collectLatest {
+            it.let { event ->
                 val result = event.peekContent()
                 when (result.status) {
                     Status.SUCCESS -> {

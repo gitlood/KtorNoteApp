@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
-import com.androiddevs.ktornoteapp.addeditnote.AddEditNoteFragmentArgs
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.androiddevs.ktornoteapp.core.util.Constants.DEFAULT_NOTE_COLOR
@@ -95,6 +94,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
         val owners = curNote?.owners ?: listOf(authEmail)
 
         val note = Note(title, content, date, owners, color, id = id)
+
         viewModel.insertNote(note)
     }
 
