@@ -1,10 +1,13 @@
 package com.androiddevs.ktornoteapp.notedetail.ui
 
+import app.cash.turbine.Event
+import app.cash.turbine.test
 import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -57,12 +60,27 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
     @Test
     fun `Observe note id success - When note with noteID is in database`() = runTest {
         //Given
-        fakeNotesRepository.addNote(getNote())
+        fakeNotesRepository.insertNote(getNote())
 
         //When
-        noteDetailViewModel.observeNoteByID(getNote().id)
+        val note = noteDetailViewModel.observeNoteByID(getNote().id)?.first()
 
         //Then
+        assertThat(note).isEqualTo(getNote())
     }
 
+    @Test
+    fun `Observe note id failure - When note with noteID is not in database`() = runTest {
+        //Given
+        fakeNotesRepository.insertNote(getNote())
+
+        //When
+        val note = noteDetailViewModel.observeNoteByID("invalid ID")
+
+        //Then
+        note?.test {
+            val actual = cancelAndConsumeRemainingEvents()
+            assertThat(actual).containsExactly(Event.Complete)
+        }
+    }
 }

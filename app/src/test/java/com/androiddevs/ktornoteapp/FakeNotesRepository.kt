@@ -5,6 +5,7 @@ import com.androiddevs.ktornoteapp.core.data.repositories.interfaces.NoteReposit
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import okhttp3.ResponseBody
 import retrofit2.Response
 
@@ -21,7 +22,9 @@ class FakeNotesRepository : NoteRepository {
     }
 
     override fun observeNoteByID(noteID: String): Flow<Note> {
-        TODO("Not yet implemented")
+        return noteDatabase.filter { note ->
+            note.id == noteID
+        }.asFlow()
     }
 
     override suspend fun insertNote(note: Note) {
