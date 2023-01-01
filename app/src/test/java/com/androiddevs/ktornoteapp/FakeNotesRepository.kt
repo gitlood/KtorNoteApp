@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Response
 
-class FakeNotesRepository:NoteRepository {
+class FakeNotesRepository : NoteRepository {
+
+    var noteDatabase: MutableList<Note> = mutableListOf()
+
     override var curNotesResponse: Response<List<Note>>?
         get() = TODO("Not yet implemented")
         set(value) {}
@@ -22,7 +25,7 @@ class FakeNotesRepository:NoteRepository {
     }
 
     override suspend fun insertNote(note: Note) {
-        TODO("Not yet implemented")
+        noteDatabase.add(note)
     }
 
     override suspend fun deleteNote(noteID: String) {
@@ -34,7 +37,12 @@ class FakeNotesRepository:NoteRepository {
     }
 
     override suspend fun getNoteById(noteId: String): Note? {
-        TODO("Not yet implemented")
+        var note: Note? = null
+        noteDatabase.forEach {
+            if (it.id == noteId)
+                note = it
+        }
+        return note
     }
 
     override suspend fun addOwnerToNote(owner: String, noteID: String): Resource<String> {

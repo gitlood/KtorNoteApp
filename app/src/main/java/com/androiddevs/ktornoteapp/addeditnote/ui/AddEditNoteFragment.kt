@@ -8,16 +8,19 @@ import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.addeditnote.AddEditNoteFragmentArgs
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
+import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import com.androiddevs.ktornoteapp.core.util.Constants.DEFAULT_NOTE_COLOR
 import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.androiddevs.ktornoteapp.core.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -105,9 +108,9 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
         }
     }
 
-    private fun subscribeToObservers() {
-        viewModel.note.observe(viewLifecycleOwner) {
-            it?.getContentIfNotHandled()?.let { result ->
+    private fun subscribeToObservers() = lifecycleScope.launch {
+        viewModel.note.collectLatest {
+            it.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         val note = result.data!!
