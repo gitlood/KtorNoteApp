@@ -6,6 +6,7 @@ import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
 import retrofit2.Response
 
@@ -18,7 +19,7 @@ class FakeNotesRepository : NoteRepository {
         set(value) {}
 
     override fun getAllNotes(): Flow<Resource<List<Note>>> {
-        TODO("Not yet implemented")
+        return flow { Resource(Status.SUCCESS, noteDatabase.toList(), null) }
     }
 
     override fun observeNoteByID(noteID: String): Flow<Note> {
@@ -32,11 +33,19 @@ class FakeNotesRepository : NoteRepository {
     }
 
     override suspend fun deleteNote(noteID: String) {
-        TODO("Not yet implemented")
+        noteDatabase.forEach { note ->
+            if (note.id == noteID) {
+                noteDatabase.remove(note)
+            }
+        }
     }
 
     override suspend fun deleteLocallyDeletedNoteID(deletedNoteId: String) {
-        TODO("Not yet implemented")
+        noteDatabase.forEach { note ->
+            if (note.id == deletedNoteId) {
+                noteDatabase.remove(note)
+            }
+        }
     }
 
     override suspend fun getNoteById(noteId: String): Note? {
