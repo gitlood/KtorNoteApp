@@ -49,7 +49,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
 
         etNoteTitle = view.findViewById(R.id.etNoteTitle)
         etNoteContent = view.findViewById(R.id.etNoteContent)
-        viewNoteColor = view.findViewById<View>(R.id.viewNoteColor)
+        viewNoteColor = view.findViewById(R.id.viewNoteColor)
 
         if (args.id.isNotEmpty()) {
             viewModel.loadNoteByID(args.id)
