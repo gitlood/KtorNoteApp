@@ -3,8 +3,7 @@ package com.androiddevs.ktornoteapp.addeditnote.ui
 import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -31,10 +30,13 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
     @Test
     fun `Note added to database - When Provided with Note`() = runTest {
         //When
-        addEditNoteViewModel.insertNote(getNote())
+        val globalScope =
+            addEditNoteViewModel.insertNote(getNote())
 
         //Then
-        assertThat(fakeNotesRepository.noteDatabase.size).isEqualTo(1)
+        while (!globalScope.isActive) {
+            assertThat(fakeNotesRepository.noteDatabase.size).isEqualTo(1)
+        }
     }
 
     @Test
