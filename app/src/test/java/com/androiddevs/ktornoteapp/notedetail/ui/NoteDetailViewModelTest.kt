@@ -32,7 +32,7 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Owner being added - When owner and note ID is Not Empty`() = runTest {
+    fun `Owner being added - When owner and note ID is Populated`() = runTest {
         //When
         noteDetailViewModel.addOwnerToNote("email@gmail.com", "123")
 
@@ -70,7 +70,7 @@ class NoteDetailViewModelTest : ViewModelTestBase() {
     }
 
     @Test
-    fun `Observe note id failure - When note with noteID is not in database`() = runTest {
+    fun `Observe note id failure - When note with noteID is not found in database`() = runTest {
         //Given
         fakeNotesRepository.insertNote(getNote())
 
