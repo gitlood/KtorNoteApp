@@ -19,7 +19,7 @@ class FakeNotesRepository : NoteRepository {
         set(value) {}
 
     override fun getAllNotes(): Flow<Resource<List<Note>>> {
-        return flow { Resource(Status.SUCCESS, noteDatabase.toList(), null) }
+        return flow { emit(Resource(Status.SUCCESS, noteDatabase.toList(), null)) }
     }
 
     override fun observeNoteByID(noteID: String): Flow<Note> {

@@ -2,10 +2,10 @@ package com.androiddevs.ktornoteapp.notes.ui
 
 import app.cash.turbine.test
 import com.androiddevs.ktornoteapp.ViewModelTestBase
+import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -36,14 +36,14 @@ class NotesViewModelTest : ViewModelTestBase() {
             fakeNotesRepository.insertNote(getNote())
 
             //When
-            launch {
-                notesViewModel.syncAllNotes()
-            }
+            notesViewModel.syncAllNotes()
+
             //Then
-            launch {
-                notesViewModel.allNotes.test {
-                    this.awaitItem()
-                }
+            notesViewModel.allNotes.test {
+                val response = this.awaitItem().peekContent()
+                assertThat(response.status).isEqualTo(Status.SUCCESS)
+                assertThat(response.data?.get(0)).isEqualTo(getNote())
+                assertThat(response.message?.get(0)).isNull()
             }
         }
 
