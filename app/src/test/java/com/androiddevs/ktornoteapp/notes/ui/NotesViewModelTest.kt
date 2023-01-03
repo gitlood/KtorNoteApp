@@ -1,9 +1,11 @@
 package com.androiddevs.ktornoteapp.notes.ui
 
+import app.cash.turbine.test
 import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -27,18 +29,23 @@ class NotesViewModelTest : ViewModelTestBase() {
         Dispatchers.resetMain()
     }
 
-//    @Test
-//    fun `All notes are synced - when _forceUpdate is triggered`() =
-//        runTest(UnconfinedTestDispatcher()) {
-//            //Given
-//            fakeNotesRepository.insertNote(getNote())
-//
-//            //When
-//            notesViewModel.syncAllNotes()
-//
-//            //Then
-//            println(notesViewModel.allNotes.first())
-//        }
+    @Test
+    fun `All notes are synced - when _forceUpdate is triggered`() =
+        runTest {
+            //Given
+            fakeNotesRepository.insertNote(getNote())
+
+            //When
+            launch {
+                notesViewModel.syncAllNotes()
+            }
+            //Then
+            launch {
+                notesViewModel.allNotes.test {
+                    this.awaitItem()
+                }
+            }
+        }
 
     @Test
     fun `Note is inserted - when provided with note`() {

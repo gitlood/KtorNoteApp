@@ -11,10 +11,6 @@ open class ViewModelTestBase {
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @get:Rule
-//    var mainCoroutineRule = MainCoroutineRule()
-
     lateinit var fakeNotesRepository: FakeNotesRepository
 
     @Before
