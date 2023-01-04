@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
@@ -21,7 +20,7 @@ import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
-import com.google.android.material.textfield.TextInputEditText
+import com.androiddevs.ktornoteapp.databinding.FragmentAuthBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,8 +30,6 @@ import javax.inject.Inject
 class AuthFragment : BaseFragment(R.layout.fragment_auth) {
 
     private val viewModel: AuthViewModel by viewModels()
-    private lateinit var loginProgressBar: ProgressBar
-    private lateinit var registerProgressBar: ProgressBar
 
     @Inject
     lateinit var sharedPref: SharedPreferences
@@ -43,40 +40,38 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     private var curEmail: String? = null
     private var curPassword: String? = null
 
+    private lateinit var binding: FragmentAuthBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAuthBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         checkIfUserIsLoggedIn()
 
-        loginProgressBar = view.findViewById(R.id.loginProgressBar)
-        registerProgressBar = view.findViewById(R.id.registerProgressBar)
-
-        val loginButton = view.findViewById<Button>(R.id.btnLogin)
-        val loginEmail = view.findViewById<TextInputEditText>(R.id.etLoginEmail)
-        val loginPassword = view.findViewById<EditText>(R.id.etLoginPassword)
-
-        val registerButton = view.findViewById<Button>(R.id.btnRegister)
-        val registerEmail = view.findViewById<TextInputEditText>(R.id.etRegisterEmail)
-        val registerPassword = view.findViewById<EditText>(R.id.etRegisterPassword)
-        val confirmPassword = view.findViewById<TextInputEditText>(R.id.etRegisterPasswordConfirm)
-
         requireActivity().requestedOrientation = SCREEN_ORIENTATION_PORTRAIT
 
         subscribeToObservers()
 
-        loginButton.setOnClickListener {
-            val email = loginEmail.text.toString()
-            val password = loginPassword.text.toString()
-            curEmail = email
-            curPassword = password
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etLoginEmail.text.toString()
+            val password = binding.etLoginPassword.text.toString()
             viewModel.login(email, password)
         }
 
-        registerButton.setOnClickListener {
-            val email = registerEmail.text.toString()
-            val password = registerPassword.text.toString()
-            val confirmedPassword = confirmPassword.text.toString()
+        binding.btnRegister.setOnClickListener {
+            val email = binding.etRegisterEmail.text.toString()
+            val password = binding.etRegisterPassword.text.toString()
+            val confirmedPassword = binding.etRegisterPasswordConfirm.text.toString()
             viewModel.register(email, password, confirmedPassword)
         }
     }
@@ -95,21 +90,21 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     }
 
     private fun onRegisterSuccess(result: Resource<String>) {
-        registerProgressBar.visibility = View.GONE
+        binding.registerProgressBar.visibility = View.GONE
         showSnackBar(result.data ?: "Successfully Registered an Account")
     }
 
     private fun onRegisterLoading() {
-        registerProgressBar.visibility = View.VISIBLE
+        binding.registerProgressBar.visibility = View.VISIBLE
     }
 
     private fun onRegisterError(result: Resource<String>) {
-        registerProgressBar.visibility = View.GONE
+        binding.registerProgressBar.visibility = View.GONE
         showSnackBar(result.message ?: "An Unknown Error Occurred")
     }
 
     private fun onLoginSuccess(result: Resource<String>) {
-        loginProgressBar.visibility = View.GONE
+        binding.loginProgressBar.visibility = View.GONE
         showSnackBar(result.data ?: "Successfully Logged In")
         sharedPref.edit().putString(KEY_LOGGED_IN_EMAIL, curEmail).apply()
         sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD, curPassword).apply()
@@ -118,11 +113,11 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     }
 
     private fun onLoginLoading() {
-        loginProgressBar.visibility = View.VISIBLE
+        binding.loginProgressBar.visibility = View.VISIBLE
     }
 
     private fun onLoginError(result: Resource<String>) {
-        loginProgressBar.visibility = View.GONE
+        binding.loginProgressBar.visibility = View.GONE
         showSnackBar(result.message ?: "Unknown Error Occurred")
     }
 
@@ -162,7 +157,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
                 Status.LOADING -> {
                     onLoginLoading()
                 }
-                Status.WAITING->{
+                Status.WAITING -> {
                     /* NO_OP */
                 }
             }
@@ -181,7 +176,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
                 Status.LOADING -> {
                     onRegisterLoading()
                 }
-                Status.WAITING ->{}
+                Status.WAITING -> {}
             }
         }
     }
