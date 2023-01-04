@@ -3,8 +3,9 @@ package com.androiddevs.ktornoteapp.addeditnote.ui
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
+import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.viewModels
@@ -18,6 +19,7 @@ import com.androiddevs.ktornoteapp.core.util.Constants.KEY_LOGGED_IN_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Constants.NO_EMAIL
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
+import com.androiddevs.ktornoteapp.databinding.FragmentAddEditNoteBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,21 +37,23 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
     private var curNote: Note? = null
     private var curNoteColor = DEFAULT_NOTE_COLOR
 
-    private lateinit var etNoteTitle: EditText
-    private lateinit var etNoteContent: EditText
-
-    private lateinit var viewNoteColor: View
-
     private val viewModel: AddEditNoteViewModel by viewModels()
 
     private val args: AddEditNoteFragmentArgs by navArgs()
 
+    private lateinit var binding: FragmentAddEditNoteBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAddEditNoteBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        etNoteTitle = view.findViewById(R.id.etNoteTitle)
-        etNoteContent = view.findViewById(R.id.etNoteContent)
-        viewNoteColor = view.findViewById(R.id.viewNoteColor)
 
         if (args.id.isNotEmpty()) {
             viewModel.loadNoteByID(args.id)
@@ -64,7 +68,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
             }
         }
 
-        viewNoteColor.setOnClickListener {
+        binding.viewNoteColor.setOnClickListener {
             ColorPickerDialogueFragment().apply {
                 setPositiveListener {
                     changeViewNoteColor(it)
@@ -81,8 +85,8 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
     private fun saveNote() {
         val authEmail = sharedPref.getString(KEY_LOGGED_IN_EMAIL, NO_EMAIL) ?: NO_EMAIL
 
-        val title = etNoteTitle.text.toString()
-        val content = etNoteContent.text.toString()
+        val title = binding.etNoteTitle.text.toString()
+        val content = binding.etNoteContent.text.toString()
 
         if (title.isEmpty() || content.isEmpty()) {
             return
@@ -104,7 +108,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
             val wrappedDrawable = DrawableCompat.wrap(it)
             val color = Color.parseColor("#${colorString}")
             DrawableCompat.setTint(wrappedDrawable, color)
-            viewNoteColor.background = wrappedDrawable
+            binding.viewNoteColor.background = wrappedDrawable
             curNoteColor = colorString
         }
     }
@@ -122,7 +126,7 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
                     Status.LOADING -> {
                         /* NO_OP */
                     }
-                    Status.WAITING->{
+                    Status.WAITING -> {
                         /* NO_OP */
                     }
                 }
@@ -137,8 +141,8 @@ class AddEditNoteFragment : BaseFragment(R.layout.fragment_add_edit_note) {
     private fun onSuccess(result: Resource<Note>) {
         val note = result.data!!
         curNote = note
-        etNoteTitle.setText(note.title)
-        etNoteContent.setText(note.content)
+        binding.etNoteTitle.setText(note.title)
+        binding.etNoteContent.setText(note.content)
         changeViewNoteColor(note.color)
     }
 }
