@@ -4,10 +4,7 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
 import android.graphics.Canvas
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
@@ -19,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.androiddevs.ktornoteapp.R
 import com.androiddevs.ktornoteapp.core.data.local.entities.Note
 import com.androiddevs.ktornoteapp.core.ui.BaseFragment
@@ -30,6 +26,7 @@ import com.androiddevs.ktornoteapp.core.util.Constants.NO_PASSWORD
 import com.androiddevs.ktornoteapp.core.util.Event
 import com.androiddevs.ktornoteapp.core.util.Resource
 import com.androiddevs.ktornoteapp.core.util.Status
+import com.androiddevs.ktornoteapp.databinding.FragmentNotesBinding
 import com.androiddevs.ktornoteapp.notes.ui.adapters.NoteAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -37,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class NotesFragment : BaseFragment(R.layout.fragment_notes) {
@@ -48,11 +46,18 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
 
     private lateinit var noteAdapter: NoteAdapter
 
-    private lateinit var rvNotes: RecyclerView
-
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-
     private val swipingItem = MutableLiveData(false)
+
+    private lateinit var binding: FragmentNotesBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentNotesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private val itemTouchHelperCallBack = object : ItemTouchHelper.SimpleCallback(
         0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -100,9 +105,6 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
 
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        rvNotes = view.findViewById(R.id.rvNotes)
-
         setupRecyclerView()
         subscribeToObservers()
         setupSwipeRefreshLayout()
@@ -138,7 +140,7 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
         }
     }
 
-    private fun setupRecyclerView() = rvNotes.apply {
+    private fun setupRecyclerView() = binding.rvNotes.apply {
         noteAdapter = NoteAdapter()
         adapter = noteAdapter
         layoutManager = LinearLayoutManager(requireContext())
@@ -164,12 +166,12 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
             }
         }
         swipingItem.observe(viewLifecycleOwner) {
-            swipeRefreshLayout.isEnabled = !it
+            binding.swipeRefreshLayout.isEnabled = !it
         }
     }
 
     private fun setupSwipeRefreshLayout() {
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.syncAllNotes()
         }
     }
@@ -188,7 +190,7 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
 
     private fun onSuccess(result: Resource<List<Note>>) {
         noteAdapter.notes = result.data!!
-        swipeRefreshLayout.isRefreshing = false
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun onError(
@@ -203,13 +205,13 @@ class NotesFragment : BaseFragment(R.layout.fragment_notes) {
         result.data?.let { notes ->
             noteAdapter.notes = notes
         }
-        swipeRefreshLayout.isRefreshing = false
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun onLoading(result: Resource<List<Note>>) {
         result.data?.let { notes ->
             noteAdapter.notes = notes
         }
-        swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.isRefreshing = true
     }
 }
