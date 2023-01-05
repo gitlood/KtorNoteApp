@@ -25,7 +25,7 @@ class NoteRepositoryImpl @Inject constructor(
     private val context: Application
 ) : NoteRepository {
 
-    override var curNotesResponse: Response<List<Note>>? = null
+    var curNotesResponse: Response<List<Note>>? = null
 
     override fun getAllNotes(): Flow<Resource<List<Note>>> {
         return networkBoundResource(
@@ -121,7 +121,7 @@ class NoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun syncNotes() {
+    suspend fun syncNotes() {
         val locallyDeletedNoteIds = noteDao.getAllLocallyDeletedNoteIDS()
         locallyDeletedNoteIds.forEach { id -> deleteNote(id.deletedNoteID) }
 
@@ -136,7 +136,7 @@ class NoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addNote(note: Note): Response<ResponseBody>? {
+    suspend fun addNote(note: Note): Response<ResponseBody>? {
         val response = try {
             noteApi.addNote(note)
         } catch (e: Exception) {
@@ -145,7 +145,7 @@ class NoteRepositoryImpl @Inject constructor(
         return response
     }
 
-    override suspend fun insertNotes(notes: List<Note>) {
+    suspend fun insertNotes(notes: List<Note>) {
         notes.forEach {
             insertNote(it)
         }
