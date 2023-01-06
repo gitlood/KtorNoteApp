@@ -8,8 +8,12 @@ import org.junit.Rule
 import org.junit.rules.TestRule
 
 open class ViewModelTestBase {
+
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     lateinit var fakeNotesRepository: FakeNotesRepository
 

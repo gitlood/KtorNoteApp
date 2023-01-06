@@ -3,11 +3,8 @@ package com.androiddevs.ktornoteapp.addeditnote.ui
 import com.androiddevs.ktornoteapp.ViewModelTestBase
 import com.androiddevs.ktornoteapp.core.util.Status
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -19,12 +16,6 @@ class AddEditNoteViewModelTest : ViewModelTestBase() {
     @Before
     fun setup() {
         addEditNoteViewModel = AddEditNoteViewModel(fakeNotesRepository)
-        Dispatchers.setMain(Dispatchers.Unconfined)
-    }
-
-    @After
-    fun end() {
-        Dispatchers.resetMain()
     }
 
     @Test
